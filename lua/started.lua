@@ -4,7 +4,7 @@ vim.g.maplocalleader = ' '
 
 vim.api.nvim_create_autocmd("BufEnter", {
   pattern = { "*.py" },
-  command = "setlocal tabstop=2 shiftwidth=2 cindent noexpandtab"
+  command = "setlocal tabstop=2 shiftwidth=2"
 })
 
 vim.cmd[[ 

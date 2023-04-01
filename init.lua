@@ -2,6 +2,8 @@ require("started")
 require("base-configs")
 require("lazy-plugins")
 require("plugins-config")
+require("keymaps")
+
 
 local t_status, _ = pcall(require, "gruvbox")
 if not t_status then
@@ -62,4 +64,5 @@ else
   })
   vim.cmd[[colorscheme tokyonight-night]]
 end
+
 

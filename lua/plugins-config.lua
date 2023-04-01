@@ -2,7 +2,6 @@
 -- [[ Basic Keymaps ]]
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 require'nvim-web-devicons'.setup {
  -- your personnal icons can go here (to override)
@@ -46,9 +45,6 @@ require'nvim-web-devicons'.setup {
   }
  };
 }
--- Remap for dealing with word wrap
-vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -82,22 +78,7 @@ end
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
 
--- See `:help telescope.builtin`
-vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
-vim.keymap.set('n', '<leader>g', function()
-  -- You can pass additional configuration to telescope to change theme, layout, etc.
-  require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-    winblend = 10,
-    previewer = false,
-  })
-end, { desc = '[/] Fuzzily search in current buffer' })
 
-vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
-vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
-vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
-vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -165,64 +146,33 @@ require('nvim-treesitter.configs').setup {
   },
 }
 
--- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 
 
 local navic = require("nvim-navic")
+require("nvim-navbuddy").setup()
+local navbuddy = require("nvim-navbuddy")
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(client, bufnr)
-  -- NOTE: Remember that lua is a real programming language, and as such it is possible
-  -- to define small helper and utility functions so you don't have to repeat yourself
-  -- many times.
-  --
-  -- In this case, we create a function that lets us more easily define mappings specific
-  -- for LSP related items. It sets the mode, buffer and description for us each time.
-  client.server_capabilities.documentRangeFormattingProvider = true
-  client.server_capabilities.documentFormattingProvider = true
+-- NOTE: Remember that lua is a real programming language, and as such it is possible
+-- to define small helper and utility functions so you don't have to repeat yourself
+-- many times.
+--
+-- In this case, we create a function that lets us more easily define mappings specific
+-- for LSP related items. It sets the mode, buffer and description for us each time.
+client.server_capabilities.documentRangeFormattingProvider = true
+client.server_capabilities.documentFormattingProvider = true
 
-  if client.server_capabilities.documentSymbolProvider then
-    navic.attach(client, bufnr)
-  end
 
-  local nmap = function(keys, func, desc)
-    if desc then
-      desc = 'LSP: ' .. desc
-    end
+if client.server_capabilities.documentSymbolProvider then
+  navic.attach(client, bufnr)
+  navbuddy.attach(client, bufnr)
+end
 
-    vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
-  end
-
-  nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-  nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-
-  nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-  nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-  nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
-  nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
-  nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-  nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-
-  -- See `:help K` for why this keymap
-  nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<leader>l', vim.lsp.buf.signature_help, 'Signature Documentation')
-
-  -- Lesser used LSP functionality
-  nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-  nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
-  nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
-  nmap('<leader>wl', function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, '[W]orkspace [L]ist Folders')
-
-  -- Create a command `:Format` local to the LSP buffer
-  vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-    vim.lsp.buf.format()
-  end, { desc = 'Format current buffer with LSP' })
+-- Create a command `:Format` local to the LSP buffer
+vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+  vim.lsp.buf.format()
+end, { desc = 'Format current buffer with LSP' })
 end
 
 -- Enable the following language servers
@@ -231,23 +181,34 @@ end
 --  Add any additional override configuration in the following tables. They will be passed to
 --  the `settings` field of the server config. You must look up that documentation yourself.
 local servers = {
-  clangd = {},
-  pyright = {},
-  volar = {
-    filetypes = {'vue', 'typescript', 'javascript', 'json'},
-  },
-  rust_analyzer = {},
-  tsserver = {
-    filetypes = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact", "javascript.jsx" },
-    cmd = { "typescript-language-server", "--stdio" }
-  },
+clangd = {},
+pyright = {
+    python = {
+      analysis = {
+        typeCheckingMode = "off",
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true
+      }
+    }
+},
+volar = {
+  filetypes = {'vue', 'typescript', 'javascript', 'json'},
+},
+rust_analyzer = {},
+tsserver = {
+  filetypes = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact", "javascript.jsx" },
+  cmd = { "typescript-language-server", "--stdio" }
+},
+cssls = {
+  filetypes = {"vue", "css", "scss"}
+},
 
-  lua_ls = {
-    Lua = {
-      workspace = { checkThirdParty = false },
-      telemetry = { enable = false },
-    },
+lua_ls = {
+  Lua = {
+    workspace = { checkThirdParty = false },
+    telemetry = { enable = false },
   },
+},
 }
 
 -- Setup neovim lua configuration
@@ -264,17 +225,18 @@ require('mason').setup()
 local mason_lspconfig = require 'mason-lspconfig'
 
 mason_lspconfig.setup {
-  ensure_installed = vim.tbl_keys(servers),
+ensure_installed = vim.tbl_keys(servers),
 }
 
 mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-    }
-  end,
+function(server_name)
+
+  require('lspconfig')[server_name].setup {
+    capabilities = capabilities,
+    on_attach = on_attach,
+    settings = servers[server_name],
+  }
+end,
 }
 
 -- nvim-cmp setup
@@ -284,15 +246,15 @@ local luasnip = require 'luasnip'
 luasnip.config.setup {}
 
 cmp.setup {
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
-  mapping = cmp.mapping.preset.insert {
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete {},
+snippet = {
+  expand = function(args)
+    luasnip.lsp_expand(args.body)
+  end,
+},
+mapping = cmp.mapping.preset.insert {
+  ['<C-j>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-k>'] = cmp.mapping.scroll_docs(4),
+    ['<C-v>'] = cmp.mapping.complete {},
     ['<CR>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
@@ -432,26 +394,6 @@ vim.g.nvimtree_side = options.view.side
 require('nvim-tree').setup(options)
 
 
-local keymap = vim.keymap
-
-keymap.set('n', '<leader>e', '<cmd>:NvimTreeToggle<CR>')
-
-keymap.set('', '<C-h>', '<C-w>h')
-keymap.set('', '<C-k>', '<C-w>k')
-keymap.set('', '<C-j>', '<C-w>j')
-keymap.set('', '<C-l>', '<C-w>l')
-
--- Resize window
-keymap.set('n', '<M-H>', '<C-w><')
-keymap.set('n', '<M-L>', '<C-w>>')
-keymap.set('n', '<M-K>', '<C-w>+')
-keymap.set('n', '<M-J>', '<C-w>-')
-
-
-
-keymap.set('n', 'sh', ':noh<CR>')
-keymap.set('n', '<leader>h', ':noh<CR>')
-keymap.set('n', '<M-Q>', ':qa!<CR>')
 
 require'lspconfig'.volar.setup{
   filetypes = {'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json'},
@@ -473,8 +415,6 @@ if (not status_hop) then
   print("Hop not added")
 else
   hop.setup()
-  vim.api.nvim_set_keymap("n", "s", ":HopChar2<cr>", { silent = true })
-  vim.api.nvim_set_keymap("n", "S", ":HopWord<cr>", { silent = true })
 end
 
 
@@ -491,10 +431,6 @@ else
     opacity = nil,
     post_open_hook = nil
   }
-  vim.cmd("nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>")
-  vim.cmd("nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementation()<CR>")
-  vim.cmd("nnoremap gP <cmd>lua require('goto-preview').close_all_win()<CR>")
-  vim.cmd("nnoremap gpr <cmd>lua require('goto-preview').goto_preview_references()<CR>")
 end
 
 vim.opt.termguicolors = true
@@ -535,36 +471,6 @@ if (not status_comment) then
   comment.setup()
 end
 
-local keymap = vim.keymap
-
-keymap.set('n', '<Leader>/', '<cmd>lua require("Comment.api").toggle.linewise.current()<CR>')
-keymap.set('v', '<Leader>/', '<ESC><cmd>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>')
--- Tabs
-keymap.set('n', 'te', ':tabedit<Return>', { silent = true })
-keymap.set('n', 'ss', ':split<Return><C-w>w', { silent = true })
-keymap.set('n', 'sv', ':vsplit<Return><C-w>w', { silent = true })
-
-vim.cmd("nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>")
-vim.cmd("nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementation()<CR>")
-vim.cmd("nnoremap gP <cmd>lua require('goto-preview').close_all_win()<CR>")
-vim.cmd("nnoremap gpr <cmd>lua require('goto-preview').goto_preview_references()<CR>")
-
-keymap.set("n", "<M-S>", ":SymbolsOutline<CR>")
-
--- Do not yank with x or c
-keymap.set('n', 'x', '"_x')
-keymap.set('n', 'c', '"_c')
--- Increment/decrement
-keymap.set('n', '+', '<C-a>')
-keymap.set('n', '-', '<C-x>')
-
--- Delete a word
-keymap.set('n', 'dw', 'diw')
-keymap.set('n','<M-X>', ':<C-U>bprevious <bar> bdelete #<CR>')
-
-
-vim.api.nvim_set_keymap('n', '<S-l>', '<cmd>BufferLineCycleNext<CR>', {})
-vim.api.nvim_set_keymap('n', '<S-h>', '<cmd>BufferLineCyclePrev<CR>', {})
 
 require('nvim-treesitter.configs').setup({
   rainbow = {
@@ -604,3 +510,6 @@ require("colorizer").setup {
 }
 
 vim.g.navic_silence = true
+
+-- Lua
+require("lualine-config")
