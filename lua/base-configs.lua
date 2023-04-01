@@ -1,0 +1,104 @@
+-- Make line numbers default
+vim.wo.number = true
+
+-- Enable mouse mode
+vim.o.mouse = 'a'
+
+-- Sync clipboard between OS and Neovim. Remove this option if you want your OS clipboard to remain independent.
+--  See `:help 'clipboard'`
+-- vim.o.clipboard = 'unnamedplus'
+
+-- Enable break indent
+vim.o.breakindent = true
+
+-- Save undo history
+vim.o.undofile = true
+
+-- Case insensitive searching UNLESS /C or capital in search
+vim.o.ignorecase = true
+vim.o.smartcase = true
+
+-- Keep signcolumn on by default
+vim.wo.signcolumn = 'yes'
+
+-- Decrease update time
+vim.o.updatetime = 250
+vim.o.timeout = true
+vim.o.timeoutlen = 300
+
+-- Set completeopt to have a better completion experience
+vim.o.completeopt = 'menuone,noselect'
+
+-- NOTE: You should make sure your terminal supports this
+vim.o.termguicolors = true
+
+
+-- NOTE: Here is where you install your plugins.
+--  You can configure plugins using the `config` key.
+--
+--  You can also configure plugins after the setup call,
+--    as they will be available in your neovim runtime.
+
+-- [[ Setting options ]]
+-- See `:help vim.o`
+vim.opt.laststatus = 3 -- global statusline
+-- Set highlight on search
+vim.o.hlsearch = false
+
+
+vim.scriptencoding    = 'utf-8'
+vim.opt.encoding      = 'utf-8'
+vim.opt.fileencoding  = 'utf-8'
+
+vim.wo.relativenumber = true
+
+vim.opt.title         = true
+vim.opt.autoindent    = true
+vim.opt.hlsearch      = true
+
+vim.opt.backup        = false
+vim.opt.showcmd       = true
+vim.opt.cmdheight     = 1
+-- vim.opt.laststatus    = 2
+vim.expandtab         = true
+vim.opt.scrolloff     = 2
+vim.opt.shell         = 'bash'
+
+vim.opt.backupskip    = '/tmp/*./private/tmp/*'
+vim.opt.inccommand    = 'split'
+vim.opt.ignorecase    = true
+vim.opt.smarttab      = true
+vim.opt.breakindent   = true
+vim.opt.shiftwidth    = 2
+vim.opt.tabstop       = 2
+vim.opt.ai            = true
+vim.opt.si            = true
+vim.opt.wrap          = false
+vim.opt.backspace     = 'start,eol,indent'
+vim.opt.path:append { '**' }
+vim.opt.wildignore:append { '*/node_modules/*' }
+
+-- opt.smartindent = true
+vim.opt.tabstop = 1
+vim.opt.showtabline = 2
+vim.opt.relativenumber = true
+vim.opt.numberwidth = 2
+vim.opt.shiftwidth = 2
+vim.opt.softtabstop = 1
+vim.opt.smartindent = true
+vim.opt.smarttab = true
+vim.opt.expandtab = true
+vim.opt.autoindent = true
+vim.opt.cindent = true
+
+vim.opt.cursorline = true
+vim.opt.termguicolors = true
+vim.opt.winblend = 0
+vim.wildoptions = 'pum'
+vim.opt.pumblend = 5
+
+vim.opt.undofile = true
+vim.o.undodir = '/tmp/.vim/.undodir'
+-- The line beneath this is called `modeline`. See `:help modeline`
+-- vim: ts=2 sts=2 sw=2 et
+
