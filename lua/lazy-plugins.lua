@@ -155,8 +155,8 @@ require('lazy').setup({
       -- configurations go here
         kinds = {
           File = "",
-          Module = "",
-          Namespace = "",
+          Module = "",
+          Namespace = "",
           Package = "",
           Class = "",
           Method = "",
