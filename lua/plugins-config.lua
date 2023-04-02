@@ -2,18 +2,27 @@
 -- [[ Basic Keymaps ]]
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
+-- local lvim_icons = require("icons")
 
 require'nvim-web-devicons'.setup {
  -- your personnal icons can go here (to override)
  -- you can specify color or cterm_color instead of specifying both of them
  -- DevIcon will be appended to `name`
+ enabled = vim.g.icons_enabled,
  override = {
   zsh = {
     icon = "",
     color = "#428850",
     cterm_color = "65",
     name = "Zsh"
-  }
+  },
+  info = {
+    icon = "",
+    color = "#428850",
+    cterm_color = "65",
+    name = "Information"
+  },
+
  };
  -- globally enable different highlight colors per icon (default to true)
  -- if set to false all icons will have the default icon's color
@@ -33,7 +42,13 @@ require'nvim-web-devicons'.setup {
     icon = "",
     color = "#f1502f",
     name = "Gitignore"
+  },
+  ["dockerfile"] = {
+    icon = "",
+    color = "#0088B3",
+    name = "Dockerfile"
   }
+
  };
  -- same as `override` but specifically for overrides by extension
  -- takes effect when `strict` is true
@@ -42,8 +57,41 @@ require'nvim-web-devicons'.setup {
     icon = "",
     color = "#81e043",
     name = "Log"
-  }
+  },
+  ["Dockerfile"] = {
+    icon = "",
+    color = "#0088B3",
+    name = "Dockerfile"
+  },
+  -- ["Docker"] = {
+  --   icon = "A",
+  --   color = "#00FF00",
+  --   name = "Docker"
+  -- },
  };
+ -- view = {
+ --    render = {
+ --      indent_markers = {
+ --          enable = false,
+ --          inline_arrows = true,
+ --          icons = {
+ --            corner = "└",
+ --            edge = "│",
+ --            item = "│",
+ --            none = " ",
+ --          },
+ --        },
+ --      icons = {
+ --        webdev_colors = lvim_icons,
+ --        show = {
+ --            file = lvim_icons,
+ --            folder = lvim_icons,
+ --            folder_arrow = lvim_icons,
+ --            git = lvim_icons,
+ --        },
+ --      }
+ --    }
+ --  }
 }
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -317,81 +365,6 @@ cmp.setup.cmdline(':', {
 
 
 
-local options = {
-  -- filters = {
-  --   dotfiles = false,
-  --   exclude = { vim.fn.stdpath "config" .. "/lua/custom" },
-  -- },
-  disable_netrw = true,
-  hijack_netrw = true,
-  hijack_cursor = true,
-  hijack_unnamed_buffer_when_opening = false,
-  sync_root_with_cwd = true,
-  update_focused_file = {
-    enable = true,
-    update_root = false,
-  },
-  view = {
-    adaptive_size = false,
-    side = "left",
-    width = 25,
-    hide_root_folder = true,
-  },
-  git = {
-    enable = false,
-    ignore = true,
-  },
-  filesystem_watchers = {
-    enable = true,
-  },
-  actions = {
-    open_file = {
-      resize_window = true,
-    },
-  },
-  renderer = {
-    highlight_git = false,
-    highlight_opened_files = "none",
-    indent_markers = {
-      enable = false,
-    },
-    icons = {
-      show = {
-        file = true,
-        folder = true,
-        folder_arrow = true,
-        git = false,
-      },
-      glyphs = {
-        default = "",
-        symlink = "",
-        folder = {
-          default = "",
-          empty = "",
-          empty_open = "",
-          open = "",
-          symlink = "",
-          symlink_open = "",
-          arrow_open = "",
-          arrow_closed = "",
-        },
-        git = {
-          unstaged = "✗",
-          staged = "✓",
-          unmerged = "",
-          renamed = "➜",
-          untracked = "★",
-          deleted = "",
-          ignored = "◌",
-        },
-      },
-    },
-  },
-}
-
-vim.g.nvimtree_side = options.view.side
-
-require('nvim-tree').setup(options)
 
 
 
@@ -539,3 +512,6 @@ bufferline.setup({
   },
 })
 
+
+
+vim.g.icons_enabled = true

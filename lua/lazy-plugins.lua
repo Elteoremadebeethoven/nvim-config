@@ -130,7 +130,7 @@ require('lazy').setup({
     "utilyre/barbecue.nvim",
     name = "barbecue",
     version = "*",
-    lazy= false,
+    lazy = false,
     dependencies = {
       "SmiteshP/nvim-navic",
       "nvim-tree/nvim-web-devicons", -- optional dependency
@@ -181,7 +181,6 @@ require('lazy').setup({
     requires = {
         "neovim/nvim-lspconfig",
         "SmiteshP/nvim-navic",
-        
     },
   },
   {
@@ -189,7 +188,8 @@ require('lazy').setup({
     cmd = {
       "G",
       "Git",
-      "Gdiffsplit",
+      -- "Gdiffsplit",
+      "Gvdiffsplit",
       "Gread",
       "Gwrite",
       "Ggrep",
