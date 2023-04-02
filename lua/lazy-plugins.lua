@@ -136,7 +136,51 @@ require('lazy').setup({
       "nvim-tree/nvim-web-devicons", -- optional dependency
     },
     opts = {
+        symbols = {
+    ---Modification indicator.
+    ---
+    ---@type string
+    modified = "●",
+
+    ---Truncation indicator.
+    ---
+    ---@type string
+    ellipsis = "…",
+
+    ---Entry separator.
+    ---
+    ---@type string
+    separator = "",
+  },
       -- configurations go here
+        kinds = {
+          File = "",
+          Module = "",
+          Namespace = "",
+          Package = "",
+          Class = "",
+          Method = "",
+          Property = "",
+          Field = "",
+          Constructor = "",
+          Enum = "",
+          Interface = "壟",
+          Function = "",
+          Variable = "",
+          Constant = "離",
+          String = "",
+          Number = "藍",
+          Boolean = "李",
+          Array = "",
+          Object = "",
+          Key = "",
+          Null = "ﳠ",
+          EnumMember = "羅",
+          Struct = "",
+          Event = "",
+          Operator = "*",
+          TypeParameter = "",
+        },
     },
   },
   { "ellisonleao/gruvbox.nvim" },
