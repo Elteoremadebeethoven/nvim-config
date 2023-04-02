@@ -227,6 +227,13 @@ ins_right {
 
 ins_right {
   -- filesize component
+  get_venv,
+  color = { fg = colors.yellow, gui = 'bold' },
+}
+
+
+ins_right {
+  -- filesize component
   'filesize',
   cond = conditions.buffer_not_empty,
 }

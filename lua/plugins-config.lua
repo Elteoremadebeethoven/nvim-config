@@ -407,7 +407,7 @@ else
 end
 
 vim.opt.termguicolors = true
-require("bufferline").setup{}
+-- require("bufferline").setup{}
 
 
 local status_indent, indent_line = pcall(require, 'indent_blankline')
@@ -505,6 +505,7 @@ bufferline.setup({
     diagnostics = "nvim_lsp",
     -- separator_style =  "slant" ,
     show_tab_indicators = true,
+    buffer_close_icon = "窱",
     diagnostics_indicator = function(count, level)
         local icon = level:match("error") and " " or ""
         return " " .. icon .. count

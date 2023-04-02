@@ -194,7 +194,15 @@ require('lazy').setup({
   },
   {'folke/tokyonight.nvim', branch = 'main' },
   { 'numToStr/Comment.nvim' },
-  { 'akinsho/bufferline.nvim', requires = 'nvim-tree/nvim-web-devicons' },
+  {
+    'akinsho/bufferline.nvim',
+    requires = 'nvim-tree/nvim-web-devicons',
+    opts = {
+      options = {
+        buffer_close_icon = "窱"
+      }
+    }
+  },
   {'NvChad/nvim-colorizer.lua'},
   {'mrjones2014/nvim-ts-rainbow'},
   {
