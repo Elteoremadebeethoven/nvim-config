@@ -112,7 +112,7 @@ nmap('<leader>wl', function()
   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 end, '[W]orkspace [L]ist Folders')
 
-nmap('<M-n>', ':Navbuddy<CR>','Navbuddy')
+nmap('<C-M-n>', ':Navbuddy<CR>','Navbuddy')
 
 vim.cmd[[
   inoremap <c-F> <cr><esc><<<<ko<bs>
