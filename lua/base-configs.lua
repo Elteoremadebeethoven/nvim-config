@@ -27,8 +27,6 @@ vim.o.timeoutlen = 300
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
--- WARNING: NOTE
--- TODO: DELIVERATE
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
@@ -72,22 +70,22 @@ vim.opt.backspace     = 'start,eol,indent'
 vim.opt.path:append { '**' }
 vim.opt.wildignore:append { '*/node_modules/*' }
 
-vim.opt.tabstop = 1
-vim.opt.showtabline = 2
-vim.opt.relativenumber = true
-vim.opt.numberwidth = 2
-vim.opt.shiftwidth = 2
-vim.opt.softtabstop = 1
-vim.opt.smartindent = true
-vim.opt.smarttab = true
-vim.opt.expandtab = true
-vim.opt.autoindent = true
-vim.opt.cindent = true
+vim.opt.tabstop         = 2
+vim.opt.showtabline     = 2
+vim.opt.relativenumber  = true
+vim.opt.numberwidth     = 2
+vim.opt.shiftwidth      = 2
+vim.opt.softtabstop     = 2
+vim.opt.smartindent     = true
+vim.opt.smarttab        = true
+vim.opt.expandtab       = true
+vim.opt.autoindent      = true
+vim.opt.cindent         = true
 
 vim.opt.cursorline = true
-vim.opt.winblend = 0
-vim.wildoptions = 'pum'
-vim.opt.pumblend = 5
+vim.opt.winblend   = 0
+vim.wildoptions    = 'pum'
+vim.opt.pumblend   = 5
 
 vim.opt.undofile = true
 vim.o.undodir = '/tmp/.vim/.undodir'
@@ -105,9 +103,9 @@ vim.g.neovide_input_macos_alt_is_meta = true
 
 vim.cmd [[
 " system clipboard
-  nmap <c-c> "+y
-  vmap <c-c> "+y
-  nmap <c-v> "+p
+  nmap <s-c-c> "+y
+  vmap <s-c-c> "+y
+  nmap <s-c-v> "+p
   inoremap <c-v> <c-r>+
   cnoremap <c-v> <c-r>+
   " use <c-r> to insert original character without triggering things like auto-pairs

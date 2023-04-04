@@ -38,6 +38,7 @@ keymap.set('n', '-', '<C-x>')
 -- Delete a word
 keymap.set('n', 'dw', 'diw')
 keymap.set('n','<M-X>', ':<C-U>bprevious <bar> bdelete #<CR>')
+keymap.set('n','<leader>B', ':<C-U>bprevious <bar> bdelete #<CR>')
 
 
 vim.api.nvim_set_keymap('n', '<S-l>', '<cmd>BufferLineCycleNext<CR>', {})
@@ -66,6 +67,7 @@ keymap.set('n', '<M-J>', '<C-w>-')
 keymap.set('n', 'sh', ':noh<CR>')
 keymap.set('n', '<leader>h', ':noh<CR>')
 keymap.set('n', '<M-Q>', ':qa!<CR>')
+keymap.set('n', '<leader>X', ':qa!<CR>')
 
 
 
@@ -112,7 +114,7 @@ nmap('<leader>wl', function()
   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 end, '[W]orkspace [L]ist Folders')
 
-nmap('<C-M-n>', ':Navbuddy<CR>','Navbuddy')
+nmap('<leader>N', ':Navbuddy<CR>','Navbuddy')
 
 vim.cmd[[
   inoremap <c-F> <cr><esc><<<<ko<bs>
@@ -265,6 +267,7 @@ local options = {
   disable_netrw = true,
   hijack_netrw = true,
   hijack_cursor = true,
+
   hijack_unnamed_buffer_when_opening = false,
   sync_root_with_cwd = true,
   update_focused_file = {
@@ -278,8 +281,29 @@ local options = {
     hide_root_folder = true,
   },
   git = {
-    enable = false,
-    ignore = true,
+    enable = true,
+    ignore = false,
+  },
+  modified = {
+    enable = true,
+    show_on_dirs = true,
+    show_on_open_dirs = false,
+  },
+  diagnostics = {
+    enable = true,
+    show_on_dirs = true,
+    show_on_open_dirs = true,
+    debounce_delay = 50,
+    severity = {
+      min = vim.diagnostic.severity.HINT,
+      max = vim.diagnostic.severity.ERROR,
+    },
+    icons = {
+      hint = "",
+      info = "",
+      warning = "",
+      error = "",
+    },
   },
   filesystem_watchers = {
     enable = true,
@@ -293,7 +317,15 @@ local options = {
     highlight_git = true,
     highlight_opened_files = "none",
     indent_markers = {
-      enable = false,
+      enable = true,
+      inline_arrows = true,
+      icons = {
+        corner = "└",
+        edge = "│",
+        item = "│",
+        bottom = "─",
+        none = " ",
+      },
     },
     icons = {
       webdev_colors = true,
@@ -301,31 +333,20 @@ local options = {
         file = true,
         folder = true,
         folder_arrow = true,
-        git = false,
+        git = true,
+        modified = true,
       },
-      -- glyphs = {
-      --   default = "",
-      --   symlink = "",
-      --   folder = {
-      --     default = "",
-      --     empty = "",
-      --     empty_open = "",
-      --     open = "",
-      --     symlink = "",
-      --     symlink_open = "",
-      --     arrow_open = "",
-      --     arrow_closed = "",
-      --   },
-      --   git = {
-      --     unstaged = "✗",
-      --     staged = "✓",
-      --     unmerged = "",
-      --     renamed = "➜",
-      --     untracked = "★",
-      --     deleted = "",
-      --     ignored = "◌",
-      --   },
-      -- },
+      glyphs = {
+        git = {
+          unstaged = "✗",
+          staged = "✓",
+          unmerged = "",
+          renamed = "➜",
+          untracked = "★",
+          deleted = "",
+          ignored = "◌",
+        },
+      },
     },
   },
 }
@@ -333,3 +354,10 @@ local options = {
 vim.g.nvimtree_side = options.view.side
 
 require('nvim-tree').setup(options)
+
+vim.keymap.set('n', "<leader>tt" , "<cmd>TroubleToggle<cr>")
+vim.keymap.set('n', "<leader>tw" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle workspace_diagnostics<cr>")
+vim.keymap.set('n', "<leader>td" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle document_diagnostics<cr>")
+vim.keymap.set('n', "<leader>tq" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle quickfix<cr>")
+vim.keymap.set('n', "<leader>tl" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle loclist<cr>")
+vim.keymap.set('n', "<leader>tr" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle lsp_references<cr>")

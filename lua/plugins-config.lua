@@ -102,6 +102,7 @@ else
 end
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
+require("telescope").load_extension("lazygit")
 
 
 
@@ -113,7 +114,7 @@ require('nvim-treesitter.configs').setup {
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = true,
-
+  -- open_on_setup = true,
   highlight = { enable = true },
   indent = { enable = true, disable = { 'python' } },
   incremental_selection = {
@@ -576,3 +577,5 @@ require('illuminate').configure({
 })
 
 vim.cmd("hi def IlluminatedWordText gui=underline")
+
+

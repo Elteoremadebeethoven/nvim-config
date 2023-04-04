@@ -1,10 +1,6 @@
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
-
-  -- Git related plugins
   'tpope/vim-rhubarb',
-
-  -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
   'yorik1984/newpaper.nvim',
 
@@ -34,7 +30,6 @@ require('lazy').setup({
   {'hrsh7th/cmp-path'},
   {'hrsh7th/cmp-cmdline'},
 
-  -- Useful plugin to show you pending keybinds.
   { 'folke/which-key.nvim', opts = {} },
   { -- Adds git releated signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -53,9 +48,9 @@ require('lazy').setup({
   { -- Theme inspired by Atom
     'navarasu/onedark.nvim',
     priority = 1000,
-    --config = function()
-      --vim.cmd.colorscheme 'onedark'
-    --end,
+    -- config = function()
+    --   vim.cmd.colorscheme 'onedark'
+    -- end,
   },
 
   { -- Set lualine as statusline
@@ -83,16 +78,8 @@ require('lazy').setup({
       show_trailing_blankline_indent = false,
     },
   },
-
-  -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
-
-  -- Fuzzy Finder (files, lsp, etc)
   { 'nvim-telescope/telescope.nvim', version = '*', dependencies = { 'nvim-lua/plenary.nvim' } },
-
-  -- Fuzzy Finder Algorithm which requires local dependencies to be built.
-  -- Only load if `make` is available. Make sure you have the system
-  -- requirements installed.
   {
     'nvim-telescope/telescope-fzf-native.nvim',
     -- NOTE: If you are having trouble with this installation,
@@ -137,22 +124,10 @@ require('lazy').setup({
     },
     opts = {
         symbols = {
-    ---Modification indicator.
-    ---
-    ---@type string
-    modified = "●",
-
-    ---Truncation indicator.
-    ---
-    ---@type string
-    ellipsis = "…",
-
-    ---Entry separator.
-    ---
-    ---@type string
-    separator = "",
-  },
-      -- configurations go here
+          modified = "●",
+          ellipsis = "…",
+          separator = "",
+        },
         kinds = {
           File = "",
           Module = "",
@@ -215,6 +190,8 @@ require('lazy').setup({
   { "mg979/vim-visual-multi",
     config = function ()
       vim.cmd[[
+      nmap   <M-C-j>         <Plug>(VM-Add-Cursor-Down)
+      nmap   <M-C-k>         <Plug>(VM-Add-Cursor-Up)
       nmap   <C-LeftMouse>         <Plug>(VM-Mouse-Cursor)
       nmap   <C-RightMouse>        <Plug>(VM-Mouse-Word)  
       nmap   <M-C-RightMouse>      <Plug>(VM-Mouse-Column)
@@ -260,7 +237,11 @@ require('lazy').setup({
     opts = {--[[ things you want to change go here]]}
   },
   {"RRethy/vim-illuminate"},
-
+  {
+    "folke/trouble.nvim",
+    cmd = "TroubleToggle",
+  },
+  {"kdheepak/lazygit.nvim"},
 
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart

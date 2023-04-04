@@ -9,7 +9,7 @@ local function get_venv()
   local venv = vim.env.VIRTUAL_ENV
     if venv then
     local params = split(venv, '/')
-      return '(env:'..params[table.getn(params)-1]..')'
+      return '(env:'..params[#params-1]..')'
     else
       return ''
     end
