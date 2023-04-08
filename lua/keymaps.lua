@@ -268,6 +268,7 @@ local options = {
   hijack_netrw = true,
   hijack_cursor = true,
 
+  -- transparent_panel = true,
   hijack_unnamed_buffer_when_opening = false,
   sync_root_with_cwd = true,
   update_focused_file = {
@@ -361,3 +362,8 @@ vim.keymap.set('n', "<leader>td" , "<cmd>TroubleToggle workspace_diagnostics<cr>
 vim.keymap.set('n', "<leader>tq" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle quickfix<cr>")
 vim.keymap.set('n', "<leader>tl" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle loclist<cr>")
 vim.keymap.set('n', "<leader>tr" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle lsp_references<cr>")
+
+vim.keymap.set('n', "<leader>F" , "<cmd>lua vim.lsp.buf.formatting()<cr>")
+vim.keymap.set('n', "<leader>f" , "<cmd>lua vim.lsp.buf.format{async=true}<cr>")
+vim.keymap.set('n', "<M-N>" , "*")
+

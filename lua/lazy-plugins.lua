@@ -6,7 +6,8 @@ require('lazy').setup({
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
-  { -- LSP Configuration & Plugins
+  {
+    -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
@@ -22,16 +23,18 @@ require('lazy').setup({
     },
   },
 
-  { -- Autocompletion
+  {
+    -- Autocompletion
     'hrsh7th/nvim-cmp',
     dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
   },
-  {'hrsh7th/cmp-buffer'},
-  {'hrsh7th/cmp-path'},
-  {'hrsh7th/cmp-cmdline'},
+  { 'hrsh7th/cmp-buffer' },
+  { 'hrsh7th/cmp-path' },
+  { 'hrsh7th/cmp-cmdline' },
 
   { 'folke/which-key.nvim', opts = {} },
-  { -- Adds git releated signs to the gutter, as well as utilities for managing changes
+  {
+    -- Adds git releated signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
       -- See `:help gitsigns.txt`
@@ -45,7 +48,8 @@ require('lazy').setup({
     },
   },
 
-  { -- Theme inspired by Atom
+  {
+    -- Theme inspired by Atom
     'navarasu/onedark.nvim',
     priority = 1000,
     -- config = function()
@@ -53,22 +57,24 @@ require('lazy').setup({
     -- end,
   },
 
-  { -- Set lualine as statusline
+  {
+    -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
     -- See `:help lualine.txt`
     opts = {
       options = {
         icons_enabled = true,
-       theme = 'tokyonight',
+        theme = 'tokyonight',
         -- component_separators = '|',
         -- section_separators = '',
-        component_separators = { left = '', right = ''},
-        section_separators = { left = '', right = ''},
+        component_separators = { left = '', right = '' },
+        section_separators = { left = '', right = '' },
       },
     },
   },
 
-  { -- Add indentation guides even on blank lines
+  {
+    -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
@@ -78,7 +84,7 @@ require('lazy').setup({
       show_trailing_blankline_indent = false,
     },
   },
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim',         opts = {} },
   { 'nvim-telescope/telescope.nvim', version = '*', dependencies = { 'nvim-lua/plenary.nvim' } },
   {
     'nvim-telescope/telescope-fzf-native.nvim',
@@ -90,7 +96,8 @@ require('lazy').setup({
     end,
   },
 
-  { -- Highlight, edit, and navigate code
+  {
+    -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
@@ -105,12 +112,12 @@ require('lazy').setup({
       'nvim-tree/nvim-web-devicons',
     },
   },
-    {
+  {
     "SmiteshP/nvim-navic",
     requires = "neovim/nvim-lspconfig",
     lazy = false,
     config = function()
-        require("nvim-navic").setup()
+      require("nvim-navic").setup()
     end
   },
   {
@@ -122,52 +129,17 @@ require('lazy').setup({
       "SmiteshP/nvim-navic",
       "nvim-tree/nvim-web-devicons", -- optional dependency
     },
-    opts = {
-        symbols = {
-          modified = "●",
-          ellipsis = "…",
-          separator = "",
-        },
-        kinds = {
-          File = "",
-          Module = "",
-          Namespace = "",
-          Package = "",
-          Class = "",
-          Method = "",
-          Property = "",
-          Field = "",
-          Constructor = "",
-          Enum = "",
-          Interface = "壟",
-          Function = "",
-          Variable = "",
-          Constant = "離",
-          String = "",
-          Number = "藍",
-          Boolean = "李",
-          Array = "",
-          Object = "",
-          Key = "",
-          Null = "ﳠ",
-          EnumMember = "羅",
-          Struct = "",
-          Event = "",
-          Operator = "*",
-          TypeParameter = "",
-        },
-    },
   },
   { "ellisonleao/gruvbox.nvim" },
-  {'tiagovla/tokyodark.nvim'},
-  {"windwp/nvim-autopairs"},
-  {"simrat39/symbols-outline.nvim"},
-  {"rmagatti/goto-preview"},
+  { 'tiagovla/tokyodark.nvim' },
+  { "windwp/nvim-autopairs" },
+  { "simrat39/symbols-outline.nvim" },
+  { "rmagatti/goto-preview" },
   {
     'phaazon/hop.nvim',
     branch = 'v2', -- optional but strongly recommended
   },
-  {'folke/tokyonight.nvim', branch = 'main' },
+  { 'folke/tokyonight.nvim', branch = 'main' },
   { 'numToStr/Comment.nvim' },
   {
     'akinsho/bufferline.nvim',
@@ -178,8 +150,8 @@ require('lazy').setup({
       }
     }
   },
-  {'NvChad/nvim-colorizer.lua'},
-  {'mrjones2014/nvim-ts-rainbow'},
+  { 'NvChad/nvim-colorizer.lua' },
+  { 'mrjones2014/nvim-ts-rainbow' },
   {
     "folke/todo-comments.nvim",
     event = "BufRead",
@@ -187,13 +159,14 @@ require('lazy').setup({
       require("todo-comments").setup()
     end,
   },
-  { "mg979/vim-visual-multi",
-    config = function ()
-      vim.cmd[[
+  {
+    "mg979/vim-visual-multi",
+    config = function()
+      vim.cmd [[
       nmap   <M-C-j>         <Plug>(VM-Add-Cursor-Down)
       nmap   <M-C-k>         <Plug>(VM-Add-Cursor-Up)
       nmap   <C-LeftMouse>         <Plug>(VM-Mouse-Cursor)
-      nmap   <C-RightMouse>        <Plug>(VM-Mouse-Word)  
+      nmap   <C-RightMouse>        <Plug>(VM-Mouse-Word)
       nmap   <M-C-RightMouse>      <Plug>(VM-Mouse-Column)
       ]]
     end
@@ -204,12 +177,12 @@ require('lazy').setup({
     dependencies = { "williamboman/mason.nvim", "mfussenegger/nvim-dap" },
     -- enabled = vim.fn.has "win32" == 0,
   },
-  {"MunifTanjim/nui.nvim"},
+  { "MunifTanjim/nui.nvim" },
   {
     "SmiteshP/nvim-navbuddy",
     requires = {
-        "neovim/nvim-lspconfig",
-        "SmiteshP/nvim-navic",
+      "neovim/nvim-lspconfig",
+      "SmiteshP/nvim-navic",
     },
   },
   {
@@ -232,16 +205,19 @@ require('lazy').setup({
     },
     ft = { "fugitive" }
   },
-  {'akinsho/toggleterm.nvim',
+  {
+    'akinsho/toggleterm.nvim',
     version = "*",
-    opts = {--[[ things you want to change go here]]}
+    opts = { --[[ things you want to change go here]] }
   },
-  {"RRethy/vim-illuminate"},
+  { "RRethy/vim-illuminate" },
   {
     "folke/trouble.nvim",
     cmd = "TroubleToggle",
   },
-  {"kdheepak/lazygit.nvim"},
+  { "kdheepak/lazygit.nvim" },
+  "xiyaowong/transparent.nvim",
+  "jose-elias-alvarez/null-ls.nvim",
 
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
@@ -260,4 +236,3 @@ require('lazy').setup({
   --    to get rid of the warning telling you that there are not plugins in `lua/custom/plugins/`.
   -- { import = 'custom.plugins' },
 }, {})
-
