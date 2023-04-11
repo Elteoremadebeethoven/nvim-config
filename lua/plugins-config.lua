@@ -1,21 +1,6 @@
-
--- [[ Basic Keymaps ]]
--- Keymaps for better default experience
--- See `:help vim.keymap.set()`
--- local lvim_icons = require("icons")
-
 require'nvim-web-devicons'.setup {
- -- your personnal icons can go here (to override)
- -- you can specify color or cterm_color instead of specifying both of them
- -- DevIcon will be appended to `name`
  enabled = vim.g.icons_enabled,
  override = {
-  zsh = {
-    icon = "",
-    color = "#428850",
-    cterm_color = "65",
-    name = "Zsh"
-  },
   info = {
     icon = "",
     color = "#428850",
@@ -63,11 +48,6 @@ require'nvim-web-devicons'.setup {
     color = "#0088B3",
     name = "Dockerfile"
   },
-  -- ["Docker"] = {
-  --   icon = "A",
-  --   color = "#00FF00",
-  --   name = "Docker"
-  -- },
  };
 }
 -- [[ Highlight on yank ]]
@@ -91,8 +71,8 @@ else
     defaults = {
       mappings = {
         i = {
-          ['<C-u>'] = false,
-          ['<C-d>'] = false,
+          -- ['<C-u>'] = true,
+          -- ['<C-d>'] = false,
           ["<C-j>"] = t_actions.move_selection_next,
           ["<C-k>"] = t_actions.move_selection_previous,
         },
@@ -102,8 +82,7 @@ else
 end
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
-
-
+require("telescope").load_extension("lazygit")
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -113,7 +92,7 @@ require('nvim-treesitter.configs').setup {
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = true,
-
+  -- open_on_setup = true,
   highlight = { enable = true },
   indent = { enable = true, disable = { 'python' } },
   incremental_selection = {
@@ -185,19 +164,27 @@ local on_attach = function(client, bufnr)
 --
 -- In this case, we create a function that lets us more easily define mappings specific
 -- for LSP related items. It sets the mode, buffer and description for us each time.
-client.server_capabilities.documentRangeFormattingProvider = true
-client.server_capabilities.documentFormattingProvider = true
+if (client.name == "tsserver") or (client.name =="volar" ) or (client.name == "tailwindcss") then
+  -- client.resolved_capabilities.document_formatting = false -- 0.7 and earlier
+  client.server_capabilities.documentFormattingProvider = false -- 0.8 and later
+  -- client.server_capabilities.documentFormattingProvider = true
+  client.server_capabilities.documentRangeFormattingProvider = false
+else
+  client.server_capabilities.documentFormattingProvider = true -- 0.8 and later
+  client.server_capabilities.documentRangeFormattingProvider = true
+end
 
 
 if client.server_capabilities.documentSymbolProvider then
   navic.attach(client, bufnr)
   navbuddy.attach(client, bufnr)
 end
+  -- if client.name ~= 'tailwindcss' then
+  --   formatting_callback(client, bufnr)
+  --   print(client.name)
+  -- end
 
 -- Create a command `:Format` local to the LSP buffer
-vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-  vim.lsp.buf.format()
-end, { desc = 'Format current buffer with LSP' })
 end
 
 -- Enable the following language servers
@@ -223,6 +210,9 @@ rust_analyzer = {},
 tsserver = {
   filetypes = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact", "javascript.jsx" },
   cmd = { "typescript-language-server", "--stdio" }
+},
+tailwindcss = {
+  filetypes = {"html", "css", "scss"}
 },
 cssls = {
   filetypes = {"vue", "css", "scss"}
@@ -391,25 +381,25 @@ local status_indent, indent_line = pcall(require, 'indent_blankline')
 if (not status_indent) then
   print("Indent blankline not added")
 else
-  vim.opt.termguicolors = true
-  vim.cmd [[highlight IndentBlanklineIndent1 guifg=#333333 gui=nocombine]]
-  vim.cmd [[highlight IndentBlanklineContextChar guifg=#C3251C gui=nocombine]]
-  vim.cmd [[highlight IndentBlanklineChar guifg=#FF0000 gui=nocombine]]
-  vim.cmd [[highlight IndentBlanklineSpaceChar guifg=#FF0000 gui=nocombine]]
-  vim.cmd [[highlight IndentBlanklineSpaceCharBlankline guifg=#FF0000 gui=nocombine]]
-  vim.cmd [[highlight IndentBlanklineContextSpaceChar guifg=#FF0000 gui=nocombine]]
-  vim.cmd [[highlight IndentBlanklineContextStart guifg=#FF0000 gui=nocombine]]
+  vim.opt.termguicolors = false
+  -- vim.cmd [[highlight IndentBlanklineIndent1 guifg=#333333 gui=nocombine]]
+  -- vim.cmd [[highlight IndentBlanklineContextChar guifg=#C3251C gui=nocombine]]
+  -- vim.cmd [[highlight IndentBlanklineChar guifg=#FF0000 gui=nocombine]]
+  -- vim.cmd [[highlight IndentBlanklineSpaceChar guifg=#FF0000 gui=nocombine]]
+  -- vim.cmd [[highlight IndentBlanklineSpaceCharBlankline guifg=#FF0000 gui=nocombine]]
+  -- vim.cmd [[highlight IndentBlanklineContextSpaceChar guifg=#FF0000 gui=nocombine]]
+  -- vim.cmd [[highlight IndentBlanklineContextStart guifg=#FF0000 gui=nocombine]]
   vim.opt.termguicolors = false
   indent_line.setup {
     space_char_blankline = " ",
-    char_highlight_list = {
-      "IndentBlanklineIndent1",
-      "IndentBlanklineIndent1",
-      "IndentBlanklineIndent1",
-      "IndentBlanklineIndent1",
-      "IndentBlanklineIndent1",
-      "IndentBlanklineIndent1",
-    },
+    -- char_highlight_list = {
+    --   "IndentBlanklineIndent1",
+    --   "IndentBlanklineIndent1",
+    --   "IndentBlanklineIndent1",
+    --   "IndentBlanklineIndent1",
+    --   "IndentBlanklineIndent1",
+    --   "IndentBlanklineIndent1",
+    -- },
   }
 end
 
@@ -576,3 +566,31 @@ require('illuminate').configure({
 })
 
 vim.cmd("hi def IlluminatedWordText gui=underline")
+
+require("transparent").setup({
+  groups = { -- table: default groups
+    'Normal', 'NormalNC', 'Comment', 'Constant', 'Special', 'Identifier',
+    'Statement', 'PreProc', 'Type', 'Underlined', 'Todo', 'String', 'Function',
+    'Conditional', 'Repeat', 'Operator', 'Structure', 'LineNr', 'NonText',
+    'SignColumn', 'CursorLineNr', 'EndOfBuffer', 'CursorLine', 'Telescope',
+  },
+  extra_groups = {}, -- table: additional groups that should be cleared
+  exclude_groups = {}, -- table: groups you don't want to clear
+})
+
+--
+local null_ls = require("null-ls")
+
+null_ls.setup({
+  sources = {
+    null_ls.builtins.formatting.prettier.with({
+      extra_args = {
+        "--print-with", "80"
+      },
+      filetypes = {
+        "typescript", "typescriptreact", "javascript", "vue"
+      },
+    }),
+  },
+})
+

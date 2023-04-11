@@ -36,6 +36,9 @@ else
       floats = "dark",
     },
     on_highlights = function(hl, c)
+      hl.CursorLine = { bg = "#363e4b" }
+      -- hl.Cursor = { bg = "#FF0000" }
+      -- hl.CursorIM = { bg = "#FF0000" }
       hl.Type                 = { fg = c.blue1, bold = true }
       hl.Conditional          = { fg = c.magenta, bold = true }
       hl.Repeat               = { fg = c.magenta, bold = true }
@@ -62,6 +65,10 @@ else
     end
   })
   vim.cmd[[colorscheme tokyonight-night]]
+  -- vim.cmd("vim.g.tokyonight_transparent = vim.g.transparent_enabled")
+  -- vim.cmd[[hi NvimTreeNormal guibg=NONE ctermbg=NONE]]
+  -- vim.cmd("autocmd Colorscheme * highlight NvimTreeNormal guibg=none guifg=##16161E")
+
 end
 
 
