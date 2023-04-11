@@ -129,6 +129,12 @@ require('lazy').setup({
       "SmiteshP/nvim-navic",
       "nvim-tree/nvim-web-devicons", -- optional dependency
     },
+    opts = {
+      symbols = {
+      },
+        kinds = {
+      },
+    }
   },
   { "ellisonleao/gruvbox.nvim" },
   { 'tiagovla/tokyodark.nvim' },
