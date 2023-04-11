@@ -373,3 +373,5 @@ vim.keymap.set('n', "<leader>N" , "*")
 vim.keymap.set('n', "<leader>n" , "<cmd>lua require('illuminate').goto_next_reference()<cr>")
 vim.keymap.set('n', "<leader>p" , "<cmd>lua require('illuminate').goto_prev_reference()<cr>")
 
+
+nmap('<leader>U', ':Navbuddy<CR>','Navbuddy')
