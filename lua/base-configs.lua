@@ -105,9 +105,9 @@ vim.g.neovide_input_macos_alt_is_meta = true
 
 vim.cmd [[
 " system clipboard
-  nmap <c-c> "+y
-  vmap <c-c> "+y
-  nmap <c-v> "+p
+  nmap <s-c-c> "+y
+  vmap <s-c-c> "+y
+  nmap <s-c-v> "+p
   inoremap <c-v> <c-r>+
   cnoremap <c-v> <c-r>+
   " use <c-r> to insert original character without triggering things like auto-pairs
