@@ -132,7 +132,7 @@ require('lazy').setup({
     opts = {
       symbols = {
       },
-        kinds = {
+      kinds = {
       },
     }
   },
@@ -222,8 +222,15 @@ require('lazy').setup({
     cmd = "TroubleToggle",
   },
   { "kdheepak/lazygit.nvim" },
+  {
+    "windwp/nvim-ts-autotag",
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end,
+  },
   "xiyaowong/transparent.nvim",
   "jose-elias-alvarez/null-ls.nvim",
+  "aca/emmet-ls",
 
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
