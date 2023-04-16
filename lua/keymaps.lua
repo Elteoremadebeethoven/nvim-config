@@ -279,7 +279,7 @@ local options = {
     adaptive_size = false,
     side = "left",
     width = 25,
-    hide_root_folder = true,
+    -- hide_root_folder = true,
   },
   git = {
     enable = true,
