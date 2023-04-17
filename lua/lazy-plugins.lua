@@ -231,6 +231,7 @@ require('lazy').setup({
   "xiyaowong/transparent.nvim",
   "jose-elias-alvarez/null-ls.nvim",
   "aca/emmet-ls",
+  "nvim-pack/nvim-spectre",
 
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart

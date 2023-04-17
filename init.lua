@@ -38,9 +38,6 @@ else
     on_highlights = function(hl, c)
       hl.CursorLine = { bg = c.bg_highlight }
       hl.Visual = { bg = "#484a37" }
-      -- hl.Cursor = { bg = "#FF0000" }
-      -- hl.lCursor = { bg = "#FF0000" }
-      -- hl.CursorIM = { bg = "#FF0000" }
       hl.Type                 = { fg = c.blue1, bold = true }
       hl.Conditional          = { fg = c.magenta, bold = true }
       hl.Repeat               = { fg = c.magenta, bold = true }
