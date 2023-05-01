@@ -95,7 +95,7 @@ vim.o.undodir = '/tmp/.vim/.undodir'
 vim.opt.showmode = false
 
 vim.cmd[[
-  set guifont=Fira\ Code\:h15
+  set guifont=Fira\ Code\:h23
   let g:neovide_input_macos_alt_is_meta = v:true
 ]]
 
