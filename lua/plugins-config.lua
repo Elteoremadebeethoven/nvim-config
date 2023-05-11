@@ -211,9 +211,9 @@ tsserver = {
   filetypes = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact", "javascript.jsx" },
   cmd = { "typescript-language-server", "--stdio" }
 },
-tailwindcss = {
-  filetypes = {"html", "css", "scss"}
-},
+-- tailwindcss = {
+--   filetypes = {"html", "css", "scss"}
+-- },
 cssls = {
   filetypes = {"vue", "css", "scss"}
 },
