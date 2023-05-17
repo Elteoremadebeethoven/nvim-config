@@ -261,7 +261,7 @@ end
 local options = {
   -- filters = {
   --   dotfiles = false,
-  --   exclude = { vim.fn.stdpath "config" .. "/lua/custom" },
+    -- exclude = { vim.fn.stdpath "config" .. "/lua/custom" },
   -- },
   on_attach = on_attach,
   disable_netrw = true,
@@ -274,6 +274,9 @@ local options = {
   update_focused_file = {
     enable = true,
     update_root = false,
+  },
+  filters = {
+    custom = { ".DS_Store" },
   },
   view = {
     adaptive_size = false,

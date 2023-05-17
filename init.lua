@@ -4,16 +4,42 @@ require("lazy-plugins")
 require("plugins-config")
 require("keymaps")
 
-local t_status, _ = pcall(require, "gruvbox")
+local t_status, gb = pcall(require, "gruvbox")
 if not t_status then
-  require('gruvbox-theme')
-  vim.cmd [[highlight IndentBlanklineIndent1 guifg=#333333 gui=nocombine]]
   vim.cmd [[highlight IndentBlanklineContextChar guifg=#C3251C gui=nocombine]]
   vim.cmd [[highlight IndentBlanklineChar guifg=#FF0000 gui=nocombine]]
   vim.cmd [[highlight IndentBlanklineSpaceChar guifg=#FF0000 gui=nocombine]]
   vim.cmd [[highlight IndentBlanklineSpaceCharBlankline guifg=#FF0000 gui=nocombine]]
   vim.cmd [[highlight IndentBlanklineContextSpaceChar guifg=#FF0000 gui=nocombine]]
   vim.cmd [[highlight IndentBlanklineContextStart guifg=#FF0000 gui=nocombine]]
+  gb.setup({
+      -- palette_overrides = {
+      --   dark0_hard = "#161616",
+      -- },
+      contrast = "hard",
+      overrides = {
+          Constant = {link="GruvboxPurpleBold"},
+          StorageClass = {fg = "#98A254", bold=true},
+          Type = {link="GruvboxYellowBold"},
+          -- ["@constructor"] = {fg = "#98A254", bold=true},
+          Identifier = {link="GruvboxBlue"},
+          -- ["@tag.attribute"] = {fg="#98A254"},
+          ["@parameter"] = {link = "GruvboxYellow"},
+          ["@variable.builtin"] = {link="GruvboxYellowBold"},
+          htmlArg = {link="GruvboxRed"},
+          Conditional = { link = "GruvboxRedBold" },
+          Statement = { link = "GruvboxRedBold" },
+          Repeat = { link = "GruvboxRedBold" },
+          Label = { link = "GruvboxRedBold" },
+          Keyword = { link = "GruvboxRedBold" },
+          Tag = { link = "GruvboxRedBold" },
+          Special = { link = "GruvboxOrangeBold" },
+          ["@text.uri"] = {},
+          -- typescriptIdentifier = { link = "GruvboxOrange" },
+          -- Conceal = {fg = "#98A254", bold=true},
+      }
+    })
+  -- vim.cmd [[highlight IndentBlanklineIndent1 guifg=#333333 gui=nocombine]]
   vim.cmd[[colorscheme gruvbox]]
 else
   --vim.cmd [[highlight IndentBlanklineIndent1 guifg=#333333 gui=nocombine]]
