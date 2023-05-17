@@ -1,0 +1,6 @@
+{
+  "media query": {
+    "prefix": "mq",
+    "body": "@include m.$1{\n\t$2\n}"
+  }
+}

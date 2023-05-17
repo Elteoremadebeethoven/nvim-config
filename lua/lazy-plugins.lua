@@ -22,11 +22,14 @@ require('lazy').setup({
       'folke/neodev.nvim',
     },
   },
-
+  {
+    "L3MON4D3/LuaSnip",
+    dependencies = { "rafamadriz/friendly-snippets" },
+  },
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
-    dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
+    dependencies = { 'hrsh7th/cmp-nvim-lsp', 'saadparwaiz1/cmp_luasnip' },
   },
   { 'hrsh7th/cmp-buffer' },
   { 'hrsh7th/cmp-path' },
@@ -232,6 +235,7 @@ require('lazy').setup({
   "jose-elias-alvarez/null-ls.nvim",
   "aca/emmet-ls",
   "nvim-pack/nvim-spectre",
+  "derektata/lorem.nvim",
 
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
