@@ -10,12 +10,13 @@ vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
 ]]
 
-
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 
 vim.keymap.set('n', "<M-m>" , ":BufferLineMoveNext<CR>")
 vim.keymap.set('n', "<M-b>" , ":BufferLineMovePrev<CR>")
+vim.keymap.set('n', "<C-s>" , ":w<CR>")
+vim.keymap.set('i', "<C-s>" , "<ESC>:w<CR>a")
 
 
 keymap.set('n', '<Leader>/', '<cmd>lua require("Comment.api").toggle.linewise.current()<CR>')
@@ -38,6 +39,7 @@ keymap.set('n', '-', '<C-x>')
 -- Delete a word
 keymap.set('n', 'dw', 'diw')
 keymap.set('n','<M-X>', ':<C-U>bprevious <bar> bdelete #<CR>')
+keymap.set('n','<leader>x', ':<C-U>bprevious <bar> bdelete #<CR>')
 keymap.set('n','<leader>B', ':<C-U>bprevious <bar> bdelete #<CR>')
 
 
