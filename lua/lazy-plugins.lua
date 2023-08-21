@@ -161,7 +161,7 @@ require('lazy').setup({
     }
   },
   { 'NvChad/nvim-colorizer.lua' },
-  { 'mrjones2014/nvim-ts-rainbow' },
+  -- { 'mrjones2014/nvim-ts-rainbow' },
   {
     "folke/todo-comments.nvim",
     event = "BufRead",
@@ -237,6 +237,7 @@ require('lazy').setup({
   "aca/emmet-ls",
   "nvim-pack/nvim-spectre",
   "derektata/lorem.nvim",
+  "HiPhish/rainbow-delimiters.nvim",
 
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart

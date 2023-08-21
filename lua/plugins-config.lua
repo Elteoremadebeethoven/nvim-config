@@ -412,14 +412,47 @@ if (not status_comment) then
 end
 
 
-require('nvim-treesitter.configs').setup({
-  rainbow = {
-    enable = true,
-    disable = { "vue", "html", "css", "scss", "javascriptreact", "typescriptreact", "tsx", "jsx", "javascript.jsx"},
-    extended_mode = true,
-    max_file_lines = nil,
-  },
-})
+-- require('nvim-treesitter.configs').setup({
+--   rainbow = {
+--     enable = true,
+--     disable = {
+--       "vue",
+--       "html",
+--       "css",
+--       "scss",
+--       "javascriptreact",
+--       "typescriptreact",
+--       "tsx",
+--       "jsx",
+--       "javascript.jsx",
+--       "typescript.tsx",
+--     },
+--     extended_mode = true,
+--     max_file_lines = nil,
+--   },
+-- })
+
+local rainbow_delimiters = require 'rainbow-delimiters'
+
+vim.g.rainbow_delimiters = {
+    strategy = {
+        [''] = rainbow_delimiters.strategy['global'],
+        vim = rainbow_delimiters.strategy['local'],
+    },
+    query = {
+        [''] = 'rainbow-delimiters',
+        lua = 'rainbow-blocks',
+    },
+    highlight = {
+        'RainbowDelimiterRed',
+        'RainbowDelimiterYellow',
+        'RainbowDelimiterBlue',
+        'RainbowDelimiterOrange',
+        'RainbowDelimiterGreen',
+        'RainbowDelimiterViolet',
+        'RainbowDelimiterCyan',
+    },
+}
 
 
 require("colorizer").setup {

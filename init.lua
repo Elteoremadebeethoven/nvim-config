@@ -90,6 +90,15 @@ else
     end
   })
   vim.cmd[[colorscheme tokyonight-night]]
+  vim.cmd[[
+    highlight RainbowDelimiterRed  guifg=#f4ca0d ctermfg=White
+    highlight RainbowDelimiterYellow guifg=#9d7cd8 ctermfg=White
+    highlight RainbowDelimiterBlue guifg=#7dcfff ctermfg=White
+    highlight RainbowDelimiterOrange guifg=#f4ca0d ctermfg=White
+    highlight RainbowDelimiterGreen guifg=#9d7cd8 ctermfg=White
+    highlight RainbowDelimiterViolet guifg=#7dcfff ctermfg=White
+    highlight RainbowDelimiterCyan guifg=#f4ca0d ctermfg=White
+  ]]
   -- vim.cmd("vim.g.tokyonight_transparent = vim.g.transparent_enabled")
   -- vim.cmd[[hi NvimTreeNormal guibg=NONE ctermbg=NONE]]
   -- vim.cmd("autocmd Colorscheme * highlight NvimTreeNormal guibg=none guifg=##16161E")
