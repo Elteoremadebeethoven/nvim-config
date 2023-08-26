@@ -1,0 +1,46 @@
+{
+  "images responsive single": {
+    "prefix": "im",
+    "body": [
+      "<picture>",
+        "\t<source srcset=\"${1}imagen.avif\" type=\"image/avif\">",
+        "\t<source srcset=\"imagen.webp\" type=\"image/webp\">",
+        "\t<img loading=\"lazy\" src=\"imagen.jpg\"",
+        "\twidth=\"500\" height=\"300\" alt=\"$4\">",
+      "</picture>"
+    ]
+  },
+  "images responsive multy": {
+    "prefix": "imm",
+    "body": [
+      "<picture>",
+
+      "\t<source ",
+      "\t\tsizes=\"1920w, 1280w, 640w\"",
+      "\t\tsrcset=\"img/${1}imagen.avif 1920w,",
+      "\t\t        img/imagen-1280.avif 1280w,",
+      "\t\t        img/imagen-640.avif 640w\"",
+      "\t\ttype=\"image/avif\">",
+
+      "\t<source ",
+      "\t\tsizes=\"1920w, 1280w, 640w\"",
+      "\t\tsrcset=\"img/imagen.webp 1920w,",
+      "\t\t        img/imagen-1280.webp 1280w,",
+      "\t\t        img/imagen-640.webp 640w\"",
+      "\t\ttype=\"image/webp\">",
+
+      "\t<source ",
+      "\t\tsizes=\"1920w, 1280w, 640w\"",
+      "\t\tsrcset=\"img/imagen.jpg 1920w,",
+      "\t\t        img/imagen-1280.jpg 1280w,",
+      "\t\t        img/imagen-640.jpg 640w\"",
+      "\t\ttype=\"image/jpg\">",
+
+      "\t<img loading=\"lazy\" decoding=\"async\" src=\"img/imagen.jpg\"",
+      "\tlazyalt=\"imagen\" width=\"500\" height=\"300\" alt=\"Description image\">",
+
+      "</picture>"
+    ]
+  }
+}
+

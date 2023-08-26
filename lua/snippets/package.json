@@ -8,6 +8,10 @@
       {
         "language": ["scss", "sass"],
         "path": "./sass.json"
+      },
+      {
+        "language": "html",
+        "path": "./html.json"
       }
     ]
   }
