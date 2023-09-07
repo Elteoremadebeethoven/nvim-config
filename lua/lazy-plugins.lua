@@ -238,6 +238,7 @@ require('lazy').setup({
   "nvim-pack/nvim-spectre",
   "derektata/lorem.nvim",
   "HiPhish/rainbow-delimiters.nvim",
+  "tikhomirov/vim-glsl",
 
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
