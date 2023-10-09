@@ -98,10 +98,10 @@ require('nvim-treesitter.configs').setup {
   incremental_selection = {
     enable = true,
     keymaps = {
-      init_selection = '<c-space>',
-      node_incremental = '<c-space>',
+      init_selection = '<c-f>',
+      node_incremental = '<c-f>',
       scope_incremental = '<c-s>',
-      node_decremental = '<M-space>',
+      node_decremental = '<M-f>',
     },
   },
   textobjects = {
@@ -377,31 +377,67 @@ vim.opt.termguicolors = true
 -- require("bufferline").setup{}
 
 
-local status_indent, indent_line = pcall(require, 'indent_blankline')
-if (not status_indent) then
-  print("Indent blankline not added")
-else
-  vim.opt.termguicolors = false
-  -- vim.cmd [[highlight IndentBlanklineIndent1 guifg=#333333 gui=nocombine]]
-  -- vim.cmd [[highlight IndentBlanklineContextChar guifg=#C3251C gui=nocombine]]
-  -- vim.cmd [[highlight IndentBlanklineChar guifg=#FF0000 gui=nocombine]]
-  -- vim.cmd [[highlight IndentBlanklineSpaceChar guifg=#FF0000 gui=nocombine]]
-  -- vim.cmd [[highlight IndentBlanklineSpaceCharBlankline guifg=#FF0000 gui=nocombine]]
-  -- vim.cmd [[highlight IndentBlanklineContextSpaceChar guifg=#FF0000 gui=nocombine]]
-  -- vim.cmd [[highlight IndentBlanklineContextStart guifg=#FF0000 gui=nocombine]]
-  vim.opt.termguicolors = false
-  indent_line.setup {
-    space_char_blankline = " ",
-    -- char_highlight_list = {
-    --   "IndentBlanklineIndent1",
-    --   "IndentBlanklineIndent1",
-    --   "IndentBlanklineIndent1",
-    --   "IndentBlanklineIndent1",
-    --   "IndentBlanklineIndent1",
-    --   "IndentBlanklineIndent1",
-    -- },
-  }
-end
+-- local status_indent, indent_line = pcall(require, 'indent_blankline')
+-- if (not status_indent) then
+--   print("Indent blankline not added")
+-- else
+--   vim.opt.termguicolors = false
+--   -- vim.cmd [[highlight IndentBlanklineIndent1 guifg=#333333 gui=nocombine]]
+--   -- vim.cmd [[highlight IndentBlanklineContextChar guifg=#C3251C gui=nocombine]]
+--   -- vim.cmd [[highlight IndentBlanklineChar guifg=#FF0000 gui=nocombine]]
+--   -- vim.cmd [[highlight IndentBlanklineSpaceChar guifg=#FF0000 gui=nocombine]]
+--   -- vim.cmd [[highlight IndentBlanklineSpaceCharBlankline guifg=#FF0000 gui=nocombine]]
+--   -- vim.cmd [[highlight IndentBlanklineContextSpaceChar guifg=#FF0000 gui=nocombine]]
+--   -- vim.cmd [[highlight IndentBlanklineContextStart guifg=#FF0000 gui=nocombine]]
+--   vim.opt.termguicolors = false
+--   indent_line.setup {
+--     space_char_blankline = " ",
+--     -- char_highlight_list = {
+--     --   "IndentBlanklineIndent1",
+--     --   "IndentBlanklineIndent1",
+--     --   "IndentBlanklineIndent1",
+--     --   "IndentBlanklineIndent1",
+--     --   "IndentBlanklineIndent1",
+--     --   "IndentBlanklineIndent1",
+--     -- },
+--   }
+-- end
+--
+-- require("ibl").setup{}
+local highlight = {
+    "RainbowRed",
+    "RainbowYellow",
+    "RainbowBlue",
+    "RainbowOrange",
+    "RainbowGreen",
+    "RainbowViolet",
+    "RainbowCyan",
+}
+local hooks = require "ibl.hooks"
+-- create the highlight groups in the highlight setup hook, so they are reset
+-- every time the colorscheme changes
+hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+    vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+    vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+    vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+    vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+    vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+    vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+    vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+end)
+
+vim.g.rainbow_delimiters = { highlight = highlight }
+require("ibl").setup {
+  scope = {
+    enabled = true,
+    show_start = false,
+    show_end = false,
+    highlight = highlight
+  },
+  -- indent = { highlight = highlight }
+}
+
+hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
 
 require("symbols-outline").setup()
 
