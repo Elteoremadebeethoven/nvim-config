@@ -8,10 +8,18 @@ inoremap <A-j> <Esc>:m .+1<CR>==gi
 inoremap <A-k> <Esc>:m .-2<CR>==gi
 vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
+
+tnoremap <esc><esc> <C-\><C-n>
+
+"Move from shell to other buffer
+tnoremap <C-w>h <C-\><C-n><C-w>h<CR>
+tnoremap <C-w>k <C-\><C-n><C-w>k<CR>
+tnoremap <C-w>j <C-\><C-n><C-w>j<CR>
+tnoremap <C-w>l <C-\><C-n><C-w>l<CR>
+tnoremap <C-h> <C-\><C-n><C-w>h<CR>
 ]]
 
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
-
 
 vim.keymap.set('n', "<M-m>" , ":BufferLineMoveNext<CR>")
 vim.keymap.set('n', "<M-b>" , ":BufferLineMovePrev<CR>")
@@ -25,7 +33,11 @@ keymap.set('v', '<Leader>/', '<ESC><cmd>lua require("Comment.api").toggle.linewi
 keymap.set('n', 'te', ':tabedit<Return>', { silent = true })
 keymap.set('n', 'ss', ':split<Return><C-w>w', { silent = true })
 keymap.set('n', 'sv', ':vsplit<Return><C-w>w', { silent = true })
-
+keymap.set('n', '<leader>T', ':ToggleTerm direction=vertical size=65<CR>', { silent = true })
+-- 2 spaces
+keymap.set('n', '<leader>I', ':%s;^\\(\\s\\+\\);\\=repeat(\' \', len(submatch(0))/2);g<CR>|:noh<CR>', { silent = true })
+-- keymap.set('n', '<leader>t', ':ToggleTerm direction=float<CR>', { silent = true })
+-- keymap.set('n', '<Esc><Esc>', '<C-\\><C-n>', { silent = true })
 
 keymap.set("n", "<M-S>", ":SymbolsOutline<CR>")
 
@@ -70,6 +82,12 @@ keymap.set('n', 'sh', ':noh<CR>')
 keymap.set('n', '<leader>h', ':noh<CR>')
 keymap.set('n', '<M-Q>', ':qa!<CR>')
 keymap.set('n', '<leader>X', ':qa!<CR>')
+
+keymap.set('n', '<leader>|', '<c-w>|')
+keymap.set('n', '<leader>_', '<c-w>_')
+keymap.set('n', '<leader>=', '<c-w>=')
+keymap.set('n', '<leader>0', '^')
+keymap.set('n', '<leader>m', '^')
 
 
 
@@ -395,3 +413,5 @@ vim.keymap.set('n', '<leader>sp', '<cmd>lua require("spectre").open_file_search(
 })
 
 vim.keymap.set('x', '<leader>p', '\"_dP')
+
+-- vim.keymap.set('i', "<S-leader>" , "<ESC><ESC>")

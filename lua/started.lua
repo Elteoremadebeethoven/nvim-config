@@ -6,10 +6,15 @@ vim.api.nvim_create_autocmd("BufEnter", {
   pattern = { "*.py" },
   command = "setlocal tabstop=2 shiftwidth=2"
 })
+-- vim.api.nvim_create_autocmd("BufEnter", {
+--   pattern = { "*.rs" },
+--   command = "setlocal tabstop=2 shiftwidth=2"
+-- })
 
 vim.cmd[[ 
   let g:python_recommended_style = 0
   autocmd FileType java setlocal tabstop=2 shiftwidth=2 expandtab
+  autocmd FileType rust setlocal tabstop=2 shiftwidth=2 expandtab
 ]]
 
 -- Install package manager

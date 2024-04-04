@@ -42,10 +42,10 @@ require('lazy').setup({
     opts = {
       -- See `:help gitsigns.txt`
       signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
+        add          = { text = '+' },
+        change       = { text = '~' },
+        delete       = { text = '_' },
+        topdelete    = { text = '‾' },
         changedelete = { text = '~' },
         untracked    = { text = '┆' },
       },
@@ -89,9 +89,9 @@ require('lazy').setup({
   --   },
   --   -- main=""
   -- },
-  { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
-  { 'numToStr/Comment.nvim',         opts = {} },
-  { 'nvim-telescope/telescope.nvim', version = '*', dependencies = { 'nvim-lua/plenary.nvim' } },
+  { "lukas-reineke/indent-blankline.nvim", main = "ibl",  opts = {} },
+  { 'numToStr/Comment.nvim',               opts = {} },
+  { 'nvim-telescope/telescope.nvim',       version = '*', dependencies = { 'nvim-lua/plenary.nvim' } },
   {
     'nvim-telescope/telescope-fzf-native.nvim',
     -- NOTE: If you are having trouble with this installation,
@@ -241,6 +241,28 @@ require('lazy').setup({
   "derektata/lorem.nvim",
   "HiPhish/rainbow-delimiters.nvim",
   "tikhomirov/vim-glsl",
+  -- "eclipse-jdtls/eclipse.jdt.ls",
+  {
+    'nvim-java/nvim-java',
+    dependencies = {
+      'nvim-java/lua-async-await',
+      'nvim-java/nvim-java-core',
+      'nvim-java/nvim-java-test',
+      'nvim-java/nvim-java-dap',
+      'MunifTanjim/nui.nvim',
+      'neovim/nvim-lspconfig',
+      'mfussenegger/nvim-dap',
+      {
+        'williamboman/mason.nvim',
+        opts = {
+          registries = {
+            'github:nvim-java/mason-registry',
+            'github:mason-org/mason-registry',
+          },
+        },
+      }
+    },
+  }
 
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
