@@ -164,7 +164,7 @@ local on_attach = function(client, bufnr)
   --
   -- In this case, we create a function that lets us more easily define mappings specific
   -- for LSP related items. It sets the mode, buffer and description for us each time.
-  if (client.name == "tsserver") or (client.name == "volar") or (client.name == "tailwindcss") then
+  if (client.name == "ts_ls") or (client.name == "volar") or (client.name == "tailwindcss") then
     -- client.resolved_capabilities.document_formatting = false -- 0.7 and earlier
     client.server_capabilities.documentFormattingProvider = false -- 0.8 and later
     -- client.server_capabilities.documentFormattingProvider = true
@@ -228,7 +228,7 @@ local servers = {
       }
     }
   },
-  tsserver = {
+  ts_ls = {
     filetypes = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact", "javascript.jsx" },
     cmd = { "typescript-language-server", "--stdio" }
   },
