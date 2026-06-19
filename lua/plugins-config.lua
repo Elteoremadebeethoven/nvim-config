@@ -88,10 +88,28 @@ require("telescope").load_extension("lazygit")
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  -- ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'help', 'vim' },
+  ensure_installed = {
+    'bash',
+    'c',
+    'cpp',
+    'css',
+    'html',
+    'java',
+    'javascript',
+    'json',
+    'lua',
+    'python',
+    'rust',
+    'scss',
+    'tsx',
+    'typescript',
+    'vim',
+    'vimdoc',
+    'vue',
+  },
 
-  -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
-  auto_install = true,
+  -- Keep parser installs explicit; use :TSInstall/:TSUpdate instead of doing it while opening files.
+  auto_install = false,
   -- open_on_setup = true,
   highlight = { enable = true },
   indent = { enable = true, disable = { 'python' } },
@@ -155,6 +173,53 @@ require('nvim-treesitter.configs').setup {
 local navic = require("nvim-navic")
 require("nvim-navbuddy").setup()
 local navbuddy = require("nvim-navbuddy")
+
+local uv = vim.uv or vim.loop
+local function path_exists(path)
+  return uv.fs_stat(path) ~= nil
+end
+
+local vue_typescript_plugin = vim.fn.stdpath("data") ..
+  "/mason/packages/vue-language-server/node_modules/@vue/typescript-plugin"
+local vue_tsdk = vim.fn.stdpath("data") ..
+  "/mason/packages/vue-language-server/node_modules/typescript/lib"
+local ts_ls_filetypes = {
+  "javascript",
+  "javascriptreact",
+  "javascript.jsx",
+  "typescript",
+  "typescriptreact",
+  "typescript.tsx",
+}
+local ts_ls_init_options = { hostInfo = "neovim" }
+
+if path_exists(vue_typescript_plugin) then
+  table.insert(ts_ls_filetypes, "vue")
+  ts_ls_init_options.plugins = {
+    {
+      name = "@vue/typescript-plugin",
+      location = vue_typescript_plugin,
+      languages = { "javascript", "typescript", "vue" },
+    },
+  }
+end
+
+local function patch_client_request_for_navic(client)
+  if client._navic_request_compat or type(client.request) ~= "function" then
+    return
+  end
+
+  local request = client.request
+  client.request = function(first, ...)
+    if first == client then
+      return request(first, ...)
+    end
+
+    return request(client, first, ...)
+  end
+  client._navic_request_compat = true
+end
+
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(client, bufnr)
@@ -164,18 +229,20 @@ local on_attach = function(client, bufnr)
   --
   -- In this case, we create a function that lets us more easily define mappings specific
   -- for LSP related items. It sets the mode, buffer and description for us each time.
-  if (client.name == "ts_ls") or (client.name == "volar") or (client.name == "tailwindcss") then
-    -- client.resolved_capabilities.document_formatting = false -- 0.7 and earlier
+  local disable_formatting = {
+    ts_ls = true,
+    volar = true,
+    tailwindcss = true,
+  }
+
+  if disable_formatting[client.name] then
     client.server_capabilities.documentFormattingProvider = false -- 0.8 and later
-    -- client.server_capabilities.documentFormattingProvider = true
     client.server_capabilities.documentRangeFormattingProvider = false
-  else
-    client.server_capabilities.documentFormattingProvider = true -- 0.8 and later
-    client.server_capabilities.documentRangeFormattingProvider = true
   end
 
 
   if client.server_capabilities.documentSymbolProvider then
+    patch_client_request_for_navic(client)
     navic.attach(client, bufnr)
     navbuddy.attach(client, bufnr)
   end
@@ -190,25 +257,57 @@ end
 -- Enable the following language servers
 --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
 --
---  Add any additional override configuration in the following tables. They will be passed to
---  the `settings` field of the server config. You must look up that documentation yourself.
+--  Add server-specific overrides in this table. Values are passed to vim.lsp.config().
 local servers = {
-  clangd = {},
+  clangd = {
+    cmd = { "clangd" },
+    filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+    root_markers = {
+      ".clangd",
+      ".clang-tidy",
+      ".clang-format",
+      "compile_commands.json",
+      "compile_flags.txt",
+      "configure.ac",
+      ".git",
+    },
+  },
   pyright = {
-    python = {
-      analysis = {
-        typeCheckingMode = "off",
-        autoSearchPaths = true,
-        useLibraryCodeForTypes = true
+    cmd = { "pyright-langserver", "--stdio" },
+    filetypes = { "python" },
+    root_markers = {
+      "pyrightconfig.json",
+      "pyproject.toml",
+      "setup.py",
+      "setup.cfg",
+      "requirements.txt",
+      "Pipfile",
+      ".git",
+    },
+    settings = {
+      python = {
+        analysis = {
+          typeCheckingMode = "off",
+          autoSearchPaths = true,
+          useLibraryCodeForTypes = true
+        }
       }
     }
   },
   volar = {
-    filetypes = { 'vue', 'typescript', 'javascript', 'json' },
+    cmd = { "vue-language-server", "--stdio" },
+    filetypes = { "vue" },
+    root_markers = { "package.json", ".git" },
+    init_options = path_exists(vue_tsdk) and {
+      typescript = {
+        tsdk = vue_tsdk,
+      },
+    } or nil,
   },
   rust_analyzer = {
-    mason = false,
-    cmd = { vim.fn.expand("~/.cargo/bin/rust-analyzer") },
+    cmd = { "rust-analyzer" },
+    filetypes = { "rust" },
+    root_markers = { "Cargo.toml", "rust-project.json", ".git" },
     settings = {
       ["rust-analyzer"] = {
         imports = {
@@ -229,22 +328,51 @@ local servers = {
     }
   },
   ts_ls = {
-    filetypes = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact", "javascript.jsx" },
-    cmd = { "typescript-language-server", "--stdio" }
+    cmd = { "typescript-language-server", "--stdio" },
+    filetypes = ts_ls_filetypes,
+    root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
+    init_options = ts_ls_init_options,
   },
   -- tailwindcss = {
   --   filetypes = {"html", "css", "scss"}
   -- },
   cssls = {
-    filetypes = { "vue", "css", "scss" }
+    cmd = { "vscode-css-language-server", "--stdio" },
+    filetypes = { "vue", "css", "scss", "less" },
+    root_markers = { "package.json", ".git" },
+  },
+
+  emmet_ls = {
+    cmd = { "emmet-ls", "--stdio" },
+    filetypes = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', "vue" },
+    root_markers = { "package.json", ".git" },
   },
 
   lua_ls = {
-    Lua = {
-      workspace = { checkThirdParty = false },
-      telemetry = { enable = false },
+    cmd = { "lua-language-server" },
+    filetypes = { "lua" },
+    root_markers = {
+      { ".luarc.json", ".luarc.jsonc", ".luacheckrc", ".stylua.toml", "stylua.toml", "selene.toml", "selene.yml" },
+      "lua",
+      ".git",
+    },
+    settings = {
+      Lua = {
+        workspace = { checkThirdParty = false },
+        telemetry = { enable = false },
+      },
     },
   },
+}
+
+local mason_servers = {
+  "clangd",
+  "pyright",
+  "volar",
+  "rust_analyzer",
+  "ts_ls",
+  "cssls",
+  "lua_ls",
 }
 
 -- Setup neovim lua configuration
@@ -253,6 +381,14 @@ require('neodev').setup()
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+capabilities.textDocument.completion.completionItem.resolveSupport = {
+  properties = {
+    "documentation",
+    "detail",
+    "additionalTextEdits",
+  },
+}
 
 -- Setup mason so it can manage external tooling
 require('mason').setup()
@@ -261,18 +397,19 @@ require('mason').setup()
 local mason_lspconfig = require 'mason-lspconfig'
 
 mason_lspconfig.setup {
-  ensure_installed = vim.tbl_keys(servers),
+  ensure_installed = mason_servers,
 }
 
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-    }
-  end,
-}
+vim.lsp.config("*", {
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
+
+for server_name, server_config in pairs(servers) do
+  vim.lsp.config(server_name, server_config)
+end
+
+vim.lsp.enable(vim.tbl_keys(servers))
 
 -- nvim-cmp setup
 local cmp = require 'cmp'
@@ -355,14 +492,6 @@ cmp.setup.cmdline(':', {
 
 
 
-require 'lspconfig'.volar.setup {
-  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json' },
-  on_attach = on_attach,
-  capabilities = capabilities
-}
-
-
-
 local status_autopairs, autopairs = pcall(require, 'nvim-autopairs')
 if (not status_autopairs) then
   print('No autopairs added')
@@ -419,7 +548,6 @@ hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
   vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
 end)
 
-vim.g.rainbow_delimiters = { highlight = highlight }
 require("ibl").setup {
   scope = {
     enabled = true,
@@ -439,29 +567,6 @@ local status_comment, comment = pcall(require, 'Comment')
 if (not status_comment) then
   comment.setup()
 end
-
-
-local rainbow_delimiters = require 'rainbow-delimiters'
-
-vim.g.rainbow_delimiters = {
-  strategy = {
-    [''] = rainbow_delimiters.strategy['global'],
-    vim = rainbow_delimiters.strategy['local'],
-  },
-  query = {
-    [''] = 'rainbow-delimiters',
-    lua = 'rainbow-blocks',
-  },
-  highlight = {
-    'RainbowDelimiterRed',
-    'RainbowDelimiterYellow',
-    'RainbowDelimiterBlue',
-    'RainbowDelimiterOrange',
-    'RainbowDelimiterGreen',
-    'RainbowDelimiterViolet',
-    'RainbowDelimiterCyan',
-  },
-}
 
 
 require("colorizer").setup {
@@ -627,7 +732,7 @@ null_ls.setup({
   sources = {
     null_ls.builtins.formatting.prettier.with({
       extra_args = {
-        "--print-with", "80"
+        "--print-width", "80"
       },
       filetypes = {
         "typescript", "typescriptreact", "javascript", "vue"
@@ -636,33 +741,9 @@ null_ls.setup({
   },
 })
 
-local lspconfig = require("lspconfig")
-
-capabilities.textDocument.completion.completionItem.snippetSupport = true
-capabilities.textDocument.completion.completionItem.resolveSupport = {
-  properties = {
-    "documentation",
-    "detail",
-    "additionalTextEdits",
-  },
-}
-lspconfig.emmet_ls.setup({
-  capabilities = capabilities,
-  filetypes = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', "vue" }
-})
-
-
 require('spectre').setup()
 -- require("luasnip.loaders.from_vscode").lazy_load()
 require("luasnip.loaders.from_vscode").lazy_load({ paths = { "./lua/snippets" } })
 
-lspconfig.rust_analyzer.setup({
-  rust_analyzer = function(_, opts)
-    require("rust-tools").setup({ server = opts })
-    return true
-  end,
-})
-
-require('java').setup()
-
-require('lspconfig').jdtls.setup({})
+--require('java').setup()
+--require('lspconfig').jdtls.setup({})

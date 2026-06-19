@@ -99,7 +99,7 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
-vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
+vim.keymap.set('n', '<leader>sW', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 
@@ -110,6 +110,56 @@ local nmap = function(keys, func, desc)
   end
 
   vim.keymap.set('n', keys, func, { desc = desc })
+end
+
+local function has_lsp_method(method)
+  return #vim.lsp.get_clients({ bufnr = vim.api.nvim_get_current_buf(), method = method }) > 0
+end
+
+local function cursor_is_inside_call()
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  local min_row = math.max(row - 20, 1)
+  local depth = 0
+
+  for lnum = row, min_row, -1 do
+    local line = vim.api.nvim_buf_get_lines(0, lnum - 1, lnum, false)[1] or ""
+    local start_col = lnum == row and col or #line
+
+    for idx = start_col, 1, -1 do
+      local char = line:sub(idx, idx)
+      if char == ")" then
+        depth = depth + 1
+      elseif char == "(" then
+        if depth == 0 then
+          return true
+        end
+        depth = depth - 1
+      end
+    end
+  end
+
+  return false
+end
+
+local function lsp_signature_help()
+  if has_lsp_method("textDocument/signatureHelp") then
+    vim.lsp.buf.signature_help()
+  else
+    vim.notify("No hay signatureHelp LSP disponible en este buffer", vim.log.levels.INFO)
+  end
+end
+
+local function lsp_hover_or_signature()
+  if cursor_is_inside_call() and has_lsp_method("textDocument/signatureHelp") then
+    vim.lsp.buf.signature_help()
+    return
+  end
+
+  if has_lsp_method("textDocument/hover") then
+    vim.lsp.buf.hover()
+  else
+    vim.notify("No hay hover LSP disponible en este buffer", vim.log.levels.INFO)
+  end
 end
 
 nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
@@ -123,8 +173,9 @@ nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocumen
 nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
 -- See `:help K` for why this keymap
-nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-nmap('<leader>l', vim.lsp.buf.signature_help, 'Signature Documentation')
+nmap('K', lsp_hover_or_signature, 'Hover / Signature Documentation')
+nmap('<leader>l', lsp_signature_help, 'Signature Documentation')
+vim.keymap.set({ 'i', 's' }, '<C-l>', lsp_signature_help, { desc = 'LSP: Signature Documentation' })
 
 -- Lesser used LSP functionality
 nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -145,9 +196,11 @@ vim.cmd[[
 nmap('<leader>R', '<cmd>w<cr><cmd>e!<cr>', 'Refresh')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
+vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = -1, float = true }) end,
+  { desc = "Go to previous diagnostic message" })
+vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1, float = true }) end,
+  { desc = "Go to next diagnostic message" })
+vim.keymap.set('n', '<leader>dd', vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 
 -- Remap for dealing with word wrap
@@ -166,7 +219,7 @@ vim.keymap.set('n', '<leader>g', function()
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
 
-nmap('<leader>L', '<cmd>lua vim.diagnostic.open_float({scope="line"}) <CR>', 'Show line diagnostic')
+nmap('<leader>L', function() vim.diagnostic.open_float({ scope = "line" }) end, 'Show line diagnostic')
 keymap.set('n', '<leader>e', '<cmd>:NvimTreeToggle<CR>')
 keymap.set('n', '<leader>Q', '<cmd>:q<CR>')
 
@@ -379,20 +432,22 @@ vim.g.nvimtree_side = options.view.side
 
 require('nvim-tree').setup(options)
 
-vim.keymap.set('n', "<leader>tt" , "<cmd>TroubleToggle<cr>")
-vim.keymap.set('n', "<leader>tw" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle workspace_diagnostics<cr>")
-vim.keymap.set('n', "<leader>td" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle document_diagnostics<cr>")
-vim.keymap.set('n', "<leader>tq" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle quickfix<cr>")
-vim.keymap.set('n', "<leader>tl" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle loclist<cr>")
-vim.keymap.set('n', "<leader>tr" , "<cmd>TroubleToggle workspace_diagnostics<cr><cmd>TroubleToggle lsp_references<cr>")
+vim.keymap.set('n', "<leader>tt", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Trouble diagnostics" })
+vim.keymap.set('n', "<leader>tw", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Trouble workspace diagnostics" })
+vim.keymap.set('n', "<leader>td", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Trouble document diagnostics" })
+vim.keymap.set('n', "<leader>tq", "<cmd>Trouble qflist toggle<cr>", { desc = "Trouble quickfix" })
+vim.keymap.set('n', "<leader>tl", "<cmd>Trouble loclist toggle<cr>", { desc = "Trouble loclist" })
+vim.keymap.set('n', "<leader>tr", "<cmd>Trouble lsp_references toggle<cr>", { desc = "Trouble LSP references" })
 
-vim.keymap.set('n', "<leader>F" , "<cmd>lua vim.lsp.buf.formatting()<cr>")
-vim.keymap.set('n', "<leader>f" , "<cmd>lua vim.lsp.buf.format{async=true}<cr>")
+vim.keymap.set({ 'n', 'v' }, "<leader>F", function() vim.lsp.buf.format({ async = false }) end,
+  { desc = "LSP: Format" })
+vim.keymap.set({ 'n', 'v' }, "<leader>f", function() vim.lsp.buf.format({ async = true }) end,
+  { desc = "LSP: Format async" })
 vim.keymap.set('n', "<M-N>" , "*")
 
 
 
-vim.keymap.set('n', "<leader>N" , "*")
+vim.keymap.set('n', "<leader>*" , "*")
 vim.keymap.set('n', "<leader>n" , "<cmd>lua require('illuminate').goto_next_reference()<cr>")
 vim.keymap.set('n', "<leader>p" , "<cmd>lua require('illuminate').goto_prev_reference()<cr>")
 

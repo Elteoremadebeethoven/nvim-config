@@ -105,12 +105,10 @@ require('lazy').setup({
   {
     -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
-    config = function()
-      pcall(require('nvim-treesitter.install').update { with_sync = true })
-    end,
   },
   {
     'nvim-tree/nvim-tree.lua',
@@ -136,6 +134,7 @@ require('lazy').setup({
       "nvim-tree/nvim-web-devicons", -- optional dependency
     },
     opts = {
+      attach_navic = false,
       symbols = {
       },
       kinds = {
@@ -148,8 +147,8 @@ require('lazy').setup({
   { "simrat39/symbols-outline.nvim" },
   { "rmagatti/goto-preview" },
   {
-    'phaazon/hop.nvim',
-    branch = 'v2', -- optional but strongly recommended
+    'smoka7/hop.nvim',
+    version = '*',
   },
   { 'folke/tokyonight.nvim', branch = 'main' },
   { 'numToStr/Comment.nvim' },
@@ -225,7 +224,8 @@ require('lazy').setup({
   { "RRethy/vim-illuminate" },
   {
     "folke/trouble.nvim",
-    cmd = "TroubleToggle",
+    opts = {},
+    cmd = "Trouble",
   },
   { "kdheepak/lazygit.nvim" },
   {
@@ -235,11 +235,35 @@ require('lazy').setup({
     end,
   },
   "xiyaowong/transparent.nvim",
-  "jose-elias-alvarez/null-ls.nvim",
+  "nvimtools/none-ls.nvim",
   "aca/emmet-ls",
   "nvim-pack/nvim-spectre",
   "derektata/lorem.nvim",
-  "HiPhish/rainbow-delimiters.nvim",
+  {
+    "HiPhish/rainbow-delimiters.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    init = function()
+      vim.g.rainbow_delimiters = {
+        strategy = {
+          [''] = 'rainbow-delimiters.strategy.global',
+          vim = 'rainbow-delimiters.strategy.local',
+        },
+        query = {
+          [''] = 'rainbow-delimiters',
+          javascript = 'rainbow-delimiters-react',
+        },
+        highlight = {
+          'RainbowDelimiterRed',
+          'RainbowDelimiterYellow',
+          'RainbowDelimiterBlue',
+          'RainbowDelimiterOrange',
+          'RainbowDelimiterGreen',
+          'RainbowDelimiterViolet',
+          'RainbowDelimiterCyan',
+        },
+      }
+    end,
+  },
   "tikhomirov/vim-glsl",
   -- "eclipse-jdtls/eclipse.jdt.ls",
   {
