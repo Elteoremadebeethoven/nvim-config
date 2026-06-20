@@ -63,10 +63,9 @@ vim.cmd("nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementati
 vim.cmd("nnoremap gP <cmd>lua require('goto-preview').close_all_win()<CR>")
 vim.cmd("nnoremap gpr <cmd>lua require('goto-preview').goto_preview_references()<CR>")
 
+
 vim.api.nvim_set_keymap("n", "s", ":HopAnywhere<cr>", { silent = true })
 vim.api.nvim_set_keymap("n", "S", ":HopWord<cr>", { silent = true })
-
-
 
 keymap.set('', '<C-h>', '<C-w>h')
 keymap.set('', '<C-k>', '<C-w>k')

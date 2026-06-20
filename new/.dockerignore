@@ -1,0 +1,7 @@
+.git
+.gitignore
+.agents
+*.lock
+.DS_Store
+__pycache__
+*.pyc

@@ -1,0 +1,6 @@
+require("started")
+require("base-configs")
+require("lazy-plugins")
+require("plugins-config")
+require("keymaps")
+require("lualine-config")

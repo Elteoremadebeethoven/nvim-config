@@ -1,6 +1,12 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Override deprecated vim.lsp.buf_get_clients() to suppress the deprecation
+-- warning on nvim 0.11+. Some plugins still call it internally.
+vim.lsp.buf_get_clients = function(bufnr)
+  return vim.lsp.get_clients({ bufnr = vim._resolve_bufnr(bufnr) })
+end
+
 
 vim.api.nvim_create_autocmd("BufEnter", {
   pattern = { "*.py" },

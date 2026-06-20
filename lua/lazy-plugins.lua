@@ -105,10 +105,64 @@ require('lazy').setup({
   {
     -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    branch = 'master',
     build = ':TSUpdate',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
+    -- Patch query_predicates directives to handle nvim 0.12 API change
+    -- (vim.treesitter.get_node_text now requires a node with a :range() method).
+    -- Without these patches, the treesitter highlighter errors with
+    -- "attempt to call method 'range' (a nil value)" and can leave the last
+    -- line uncolored.
+    config = function()
+      local aliases = { ex = "elixir", pl = "perl", sh = "bash", uxn = "uxntal", ts = "typescript" }
+      local html_script = { importmap = "json", module = "javascript", ["application/ecmascript"] = "javascript", ["text/ecmascript"] = "javascript" }
+      local function get_parser_from_info_string(alias)
+        local match = vim.filetype.match { filename = 'a.' .. alias }
+        return match or aliases[alias] or alias
+      end
+      local function safe_node_text(node, bufnr, metadata)
+        local ok, text = pcall(vim.treesitter.get_node_text, node, bufnr, metadata)
+        if not ok or type(text) ~= 'string' then return nil end
+        return text
+      end
+      vim.treesitter.query.add_directive('set-lang-from-info-string!', function(match, _, bufnr, pred, metadata)
+        local node = match[pred[2]]
+        if not node then return end
+        local text = safe_node_text(node, bufnr)
+        if not text then return end
+        metadata['injection.language'] = get_parser_from_info_string(text:lower())
+      end, { all = true, force = true })
+      vim.treesitter.query.add_directive('set-lang-from-mimetype!', function(match, _, bufnr, pred, metadata)
+        local node = match[pred[2]]
+        if not node then return end
+        local text = safe_node_text(node, bufnr)
+        if not text then return end
+        local configured = html_script[text]
+        if configured then
+          metadata['injection.language'] = configured
+        else
+          local parts = vim.split(text, '/', {})
+          metadata['injection.language'] = parts[#parts]
+        end
+      end, { all = true, force = true })
+      vim.treesitter.query.add_directive('downcase!', function(match, _, bufnr, pred, metadata)
+        local id = pred[2]
+        local node = match[id]
+        if not node then return end
+        local text = safe_node_text(node, bufnr, { metadata = metadata[id] }) or ''
+        if not metadata[id] then metadata[id] = {} end
+        local lower = text:lower()
+        vim.treesitter.query.set_metadata_capture(metadata, id, lower, function(query, metadata, capture_id)
+          local node = match[capture_id]
+          if not node then return end
+          local text = safe_node_text(node, bufnr, { metadata = metadata[capture_id] })
+          if not text then return end
+          return text:lower()
+        end)
+      end, { all = true, force = true })
+    end,
   },
   {
     'nvim-tree/nvim-tree.lua',
@@ -144,7 +198,40 @@ require('lazy').setup({
   { "ellisonleao/gruvbox.nvim" },
   { 'tiagovla/tokyodark.nvim' },
   { "windwp/nvim-autopairs" },
-  { "simrat39/symbols-outline.nvim" },
+  {
+    "simrat39/symbols-outline.nvim",
+    -- Patch deprecated vim.lsp.buf_get_clients() -> vim.lsp.get_clients({ bufnr = ... })
+    config = function()
+      local ok, lsp_utils = pcall(require, "symbols-outline.utils.lsp_utils")
+      if ok then
+        lsp_utils.is_buf_attached_to_lsp = function(bufnr)
+          return #vim.lsp.get_clients({ bufnr = bufnr or 0 }) > 0
+        end
+      end
+      local ok2, nvim_lsp = pcall(require, "symbols-outline.providers.nvim-lsp")
+      if ok2 then
+        nvim_lsp.hover_info = function(bufnr, params, on_info)
+          local config = require("symbols-outline.config")
+          for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+            if not config.is_client_blacklisted(client.id) and client.server_capabilities.hoverProvider then
+              client.request("textDocument/hover", params, on_info, bufnr)
+              return
+            end
+          end
+          on_info(nil, { contents = { kind = "markdown", content = { "No extra information available!" } } })
+        end
+        nvim_lsp.should_use_provider = function(bufnr)
+          local config = require("symbols-outline.config")
+          for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+            if not config.is_client_blacklisted(client.id) and client.server_capabilities.documentSymbolProvider then
+              return true
+            end
+          end
+          return false
+        end
+      end
+    end,
+  },
   { "rmagatti/goto-preview" },
   {
     'smoka7/hop.nvim',
@@ -221,7 +308,25 @@ require('lazy').setup({
     version = "*",
     opts = { --[[ things you want to change go here]] }
   },
-  { "RRethy/vim-illuminate" },
+  {
+    "RRethy/vim-illuminate",
+    -- Patch client.supports_method (dot syntax) -> client:supports_method (colon)
+    -- to avoid the "client.supports_method is deprecated" warning on nvim 0.11+.
+    -- Re-applied on every nvim start, so it survives :Lazy update.
+    config = function()
+      local ok, lsp_provider = pcall(require, "illuminate.providers.lsp")
+      if ok then
+        lsp_provider.is_ready = function(bufnr)
+          for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+            if client and client:supports_method("textDocument/documentHighlight") then
+              return true
+            end
+          end
+          return false
+        end
+      end
+    end,
+  },
   {
     "folke/trouble.nvim",
     opts = {},

@@ -171,7 +171,7 @@ require('nvim-treesitter.configs').setup {
 
 
 local navic = require("nvim-navic")
-require("nvim-navbuddy").setup()
+require("nvim-navbuddy").setup({ lsp = { auto_attach = true } })
 local navbuddy = require("nvim-navbuddy")
 
 local uv = vim.uv or vim.loop
@@ -231,7 +231,7 @@ local on_attach = function(client, bufnr)
   -- for LSP related items. It sets the mode, buffer and description for us each time.
   local disable_formatting = {
     ts_ls = true,
-    volar = true,
+    vue_ls = true,
     tailwindcss = true,
   }
 
@@ -294,7 +294,7 @@ local servers = {
       }
     }
   },
-  volar = {
+  vue_ls = {
     cmd = { "vue-language-server", "--stdio" },
     filetypes = { "vue" },
     root_markers = { "package.json", ".git" },
@@ -368,7 +368,7 @@ local servers = {
 local mason_servers = {
   "clangd",
   "pyright",
-  "volar",
+  "vue_ls",
   "rust_analyzer",
   "ts_ls",
   "cssls",
@@ -587,7 +587,7 @@ require("colorizer").setup {
     -- True is same as normal
     tailwind = false,         -- Enable tailwind colors
     -- parsers can contain values used in |user_default_options|
-    sass = { enable = true }, -- Enable sass colors
+    sass = { enable = true, parsers = {} }, -- Enable sass colors
     virtualtext = "■",
     -- update color values even if buffer is not focused
     -- example use: cmp_menu, cmp_docs

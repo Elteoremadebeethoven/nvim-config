@@ -1,0 +1,26 @@
+services:
+  nvim:
+    build: .
+    image: nvim-test:latest
+    container_name: nvim-test
+    tty: true
+    stdin_open: true
+    working_dir: /home/nvim
+    volumes:
+      # Bind mount: edición en vivo de la config desde el host
+      - ./:/home/nvim/.config/nvim/
+      # Named volumes: estado persistente (lock de lazy, parsers TS, Mason, etc.)
+      - nvim-data:/home/nvim/.local/share/nvim
+      - nvim-state:/home/nvim/.local/state/nvim
+      - nvim-cache:/home/nvim/.cache/nvim
+      # Directorio de trabajo para testear con tus archivos
+      - ./work:/home/nvim/work
+    environment:
+      - TERM=xterm-256color
+      - COLORTERM=truecolor
+    command: bash
+
+volumes:
+  nvim-data:
+  nvim-state:
+  nvim-cache:
