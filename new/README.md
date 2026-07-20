@@ -66,6 +66,33 @@ nvim
 2. **Treesitter parsers**: `:TSInstall python lua javascript typescript rust html css vue`
 3. **DAP** (si se usa): `:DapInstall` para los debuggers
 
+## Tabsets
+
+Esta config incluye una capa de "tabs de tabs" en `lua/tabsets.lua`. Cada tabset guarda su propio layout de tabs/ventanas y su lista de buffers en `stdpath("data")/tabsets`.
+
+`NvimTree` se trata como estado externo al layout: al cambiar de tabset se cierra antes de restaurar la sesión y se vuelve a abrir solo si ese tabset lo tenía abierto.
+
+Comandos principales:
+
+- `:TabsetNew nombre` crea un nuevo conjunto.
+- `:TabsetSwitch nombre` cambia a otro conjunto.
+- `:TabsetPick` muestra el selector.
+- `:TabsetSave` guarda el conjunto actual.
+- `:TabsetNext` / `:TabsetPrev` ciclan entre conjuntos.
+- `:TabsetRename nombre` renombra el actual.
+- `:TabsetDelete nombre` borra un conjunto.
+- `:TabsetList` lista los conjuntos.
+
+Atajos:
+
+- `<leader>ta` nuevo tabset.
+- `<leader>ts` selector de tabsets.
+- `<leader>tS` guardar tabset.
+- `<leader>K` siguiente tabset.
+- `<leader>J` tabset anterior.
+- `<leader>t]` siguiente tabset alternativo.
+- `<leader>t[` tabset anterior alternativo.
+
 ## Notas sobre decisiones
 
 - **nvim-treesitter nueva API**: `branch = "main"` porque la `master` está archivada. La nueva API es mucho más simple: `require('nvim-treesitter').setup({})` + queries nativas de nvim 0.12

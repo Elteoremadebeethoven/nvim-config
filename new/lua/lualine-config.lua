@@ -143,6 +143,18 @@ ins_left {
 }
 
 ins_left {
+  function()
+    local ok, tabsets = pcall(require, "tabsets")
+    if not ok then
+      return ""
+    end
+
+    return tabsets.statusline()
+  end,
+  color = { fg = colors.cyan, gui = 'bold' },
+}
+
+ins_left {
   'diff',
   -- Is it me or the symbol for modified us really weird
   symbols = { added = '', modified = '', removed = '' },

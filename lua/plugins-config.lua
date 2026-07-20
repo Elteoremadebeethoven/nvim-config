@@ -669,7 +669,8 @@ require('illuminate').configure({
   -- providers: provider used to get references in the buffer, ordered by priority
   providers = {
     'lsp',
-    'treesitter',
+    -- The treesitter provider calls nvim-treesitter.locals, which is not
+    -- compatible with this Neovim/nvim-treesitter combination.
     'regex',
   },
   -- delay: delay in milliseconds

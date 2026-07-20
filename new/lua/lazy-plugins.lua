@@ -89,7 +89,19 @@ require("lazy").setup({
   {
     "akinsho/bufferline.nvim",
     dependencies = "nvim-tree/nvim-web-devicons",
-    opts = { options = { buffer_close_icon = "󰅖" } },
+    opts = {
+      options = {
+        buffer_close_icon = "󰅖",
+        custom_filter = function(buf_number)
+          local ok, tabsets = pcall(require, "tabsets")
+          if not ok then
+            return true
+          end
+
+          return tabsets.buffer_filter(buf_number)
+        end,
+      },
+    },
   },
   {
     "SmiteshP/nvim-navic",

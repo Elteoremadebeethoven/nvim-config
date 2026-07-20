@@ -153,14 +153,7 @@ require('lazy').setup({
         if not node then return end
         local text = safe_node_text(node, bufnr, { metadata = metadata[id] }) or ''
         if not metadata[id] then metadata[id] = {} end
-        local lower = text:lower()
-        vim.treesitter.query.set_metadata_capture(metadata, id, lower, function(query, metadata, capture_id)
-          local node = match[capture_id]
-          if not node then return end
-          local text = safe_node_text(node, bufnr, { metadata = metadata[capture_id] })
-          if not text then return end
-          return text:lower()
-        end)
+        metadata[id].text = text:lower()
       end, { all = true, force = true })
     end,
   },

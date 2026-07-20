@@ -39,6 +39,16 @@ keymap.set("n", "ss", ":split<Return><C-w>w", { silent = true })
 keymap.set("n", "sv", ":vsplit<Return><C-w>w", { silent = true })
 keymap.set("n", "<leader>T", ":ToggleTerm direction=vertical size=65<CR>", { silent = true })
 
+-- Tabsets (conjuntos de tabs)
+local tabsets = require("tabsets")
+keymap.set("n", "<leader>ta", tabsets.new, { desc = "Tabset new" })
+keymap.set("n", "<leader>ts", tabsets.pick, { desc = "Tabset switch" })
+keymap.set("n", "<leader>tS", tabsets.save, { desc = "Tabset save" })
+keymap.set("n", "<leader>t]", tabsets.next, { desc = "Tabset next" })
+keymap.set("n", "<leader>t[", tabsets.previous, { desc = "Tabset previous" })
+keymap.set("n", "<leader>K", tabsets.next, { desc = "Tabset next" })
+keymap.set("n", "<leader>J", tabsets.previous, { desc = "Tabset previous" })
+
 -- Borrar palabra
 keymap.set("n", "dw", "diw")
 
