@@ -1,4 +1,6 @@
 require('lazy').setup({
+  require("manim-3b1b-plugin"), -- Manim 3b1b Workflow (config en lua/manim-3b1b-plugin.lua)
+
   -- NOTE: First, some plugins that don't require any configuration
   'tpope/vim-rhubarb',
   'tpope/vim-sleuth',
